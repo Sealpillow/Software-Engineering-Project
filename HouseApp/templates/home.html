@@ -44,6 +44,140 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
         a {
             font-size : 25px
         }
+
+
+        .range_container {
+          display: flex;
+          flex-direction: column;
+          width: 20%;
+          margin: 10% auto;
+        }
+
+        .sliders_control {
+          position: relative;
+          min-height: 20px;
+        }
+
+        .form_control {
+          position: relative;
+          display: flex;
+          justify-content: space-between;
+          font-size: 17px;
+          color: #635a5a;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          pointer-events: all;
+          width: 22px;
+          height: 24px;
+          background-color: #fff;
+          border-radius: 50%;
+          box-shadow: 0 0 0 1px #C6C6C6;
+          cursor: pointer;
+        }
+
+        input[type=range]::-moz-range-thumb {
+          -webkit-appearance: none;
+          pointer-events: all;
+          width: 24px;
+          height: 24px;
+          background-color: #fff;
+          border-radius: 50%;
+          box-shadow: 0 0 0 1px #C6C6C6;
+          cursor: pointer;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+          background: #f7f7f7;
+        }
+
+        input[type=range]::-webkit-slider-thumb:active {
+          box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+          -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+        }
+
+        input[type="number"] {
+          color: #8a8383;
+          width: 110px;
+          height: 30px;
+          font-size: 17px;
+          border: none;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+           opacity: 1;
+        }
+
+        input[type="range"] {
+          -webkit-appearance: none;
+          appearance: none;
+          height: 3px;
+          width: 100%;
+          position: absolute;
+          background-color: #C6C6C6;
+          pointer-events: none;
+        }
+
+        #fromSlider1 {
+          height: 0;
+          z-index: 1;
+        }
+        #fromSlider2 {
+          height: 0;
+          z-index: 1;
+        }
+
+
+        .login-container {
+          float: right;
+        }
+
+        .login-container input[type=text] {
+          padding: 6px;
+          margin-top: 16px;
+          font-size: 17px;
+          border: none;
+          width:120px;
+        }
+
+        .login-container button {
+          float: right;
+          padding: 6px 10px;
+          margin-top: 16px;
+          margin-right: 16px;
+          background-color: #555;
+          color: white;
+          font-size: 17px;
+          border: none;
+          cursor: pointer;
+        }
+
+        .login-container button:hover {
+          background-color: green;
+        }
+
+        @media screen and (max-width: 600px) {
+          .login-container {
+            float: none;
+          }
+          .login-container button {
+            float: none;
+            display: block;
+            text-align: left;
+            width: 100%;
+            margin: 0;
+            padding: 14px;
+          }
+          .login-container input[type=text] {
+            border: 1px solid #ccc;
+          }
+        }
+
+
+
+
 </style>
 </head>
 <body class="w3-light-grey">
@@ -54,10 +188,19 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
       <img src= "https://i.ibb.co/Hq2FwXs/logo.png" alt = "text" style="width:10%" width="20" height="70">
        <!--Float links to the right. Hide them on small screens -->
       <div class="w3-right w3-hide-small">
-        <a href="#projects" class="w3-bar-item w3-button">Login</a>
-        <a href="#about" class="w3-bar-item w3-button">About</a>
-        <a href="#contact" class="w3-bar-item w3-button">Contact</a>
+      <form action="/login" target="_blank" method ="get">
+
+        <div></div>
+        <div class="login-container">
+            <form action="/login">
+              <input type="text" placeholder="Username" name="username">
+              <input type="text" placeholder="Password" name="password">
+              <button type="submit">Login</button>
+            </form>
+        </div>
+      </form>
       </div>
+
     </div>
 </div>
 <!-- Header -->
@@ -67,12 +210,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
     <div class="w3-container w3-blue w3-center" style="text-align:center; padding-top:10px" >
       <h2><i class="fas fa-home w3-margin-right"></i>HDB Search</h2>
     </div>
+    <form action="/listings" target="_blank" method ="get">
     <div class="w3-container w3-white w3-padding-24">
-      <form action="/listings" target="_blank">
-        <div class="w3-row-padding" style="margin:0 -16px;">
-          <div class="w3-half w3-margin-bottom">
-            <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 112px;"> Location &#9013; </button>
-            <div class="d-none shadow rounded menu">
+        <div class="w3-row-padding" style="margin:0-16px;">
+          <div class="w3-half w3-margin-bottom" style="">
+            <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 112px;margin-left:25px;"> Location &#9013; </button>
+            <div class="d-none shadow rounded menu" style = "margin-left: 25px;">
                 <span class="d-block menu-option"><label><input type="checkbox" id="location1" name="locOption1" value="Choa Chu kang">&nbsp; Choa Chu kang</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="location2" name="locOption2" value="Bedok">&nbsp; Bedok</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="location3" name="locOption3" value="Yishun">&nbsp; Yishun</label></span>
@@ -80,8 +223,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
             </div>
           </div>
           <div class="w3-half">
-            <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 110px;">FlatType &#9013; </button>
-            <div class="d-none shadow rounded menu">
+            <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 110px;margin-left:16px;">FlatType &#9013; </button>
+            <div class="d-none shadow rounded menu" style = "margin-left: 15px;">
                 <span class="d-block menu-option"><label><input type="checkbox" id="flat_type1" name="roomOption1" value="3 Room">&nbsp; 3 Room</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="flat_type2" name="roomOption2" value="4 Room">&nbsp; 4 Room</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="flat_type3" name="roomOption3" value="5 Room">&nbsp; 5 Room</label></span>
@@ -90,43 +233,64 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
         </div>
         <div class="w3-row-padding" style="margin:8px -16px;">
           <div class="w3-half w3-margin-bottom">
-              <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 150px;">Bed &#9013;</button>
-              <div class="d-none shadow rounded menu">
+              <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 148px;margin-left:25px;">Bed &#9013;</button>
+              <div class="d-none shadow rounded menu" style = "margin-left: 25px;">
                 <span class="d-block menu-option"><label><input type="checkbox" id="bed1" name="bedOption1" value="1">&nbsp; 1</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="bed2" name="bedOption2" value="2">&nbsp; 2</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="bed3" name="bedOption3" value="3">&nbsp; 3</label></span>
             </div>
           </div>
           <div class="w3-half">
-            <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 140px;">Bath &#9013; </button>
-            <div class="d-none shadow rounded menu">
+            <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 140px;margin-left:16px;">Bath &#9013; </button>
+            <div class="d-none shadow rounded menu" style = "margin-left: 15px;">
             <span class="d-block menu-option"><label><input type="checkbox" id="bath1" name="bathOption1" value="3 Room">&nbsp; 1</label></span>
             <span class="d-block menu-option"><label><input type="checkbox" id="bath2" name="bathOption2" value="4 Room">&nbsp; 2</label></span>
             <span class="d-block menu-option"><label><input type="checkbox" id="bath3" name="bathOption3" value="5 Room">&nbsp; 3</label></span>
             </div>
           </div>
         </div>
-        <div class="w3-row-padding" style="margin:8px -16px;">
-          <div class="w3-half w3-margin-bottom">
-              <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 142px;">Price &#9013;</button>
-              <div class="d-none shadow rounded menu">
-              <span class="d-block menu-option"><label><input type="checkbox" id="price1" name="bathOption1" value="3 Room">&nbsp; 1</label></span>
-              <span class="d-block menu-option"><label><input type="checkbox" id="price2" name="bathOption2" value="4 Room">&nbsp; 2</label></span>
-              <span class="d-block menu-option"><label><input type="checkbox" id="price3" name="bathOption3" value="5 Room">&nbsp; 3</label></span>
-              </div>
+        <div class="w3-row-padding" style="margin:0px -16px;">
+          <div class="w3-half w3-margin-bottom" style ="width: 240px;margin-left:25px;">
+            <p>Price</p>
+            <div class="sliders_control">
+                <input id="fromSlider1" type="range" value="0" min="0" max="5000000"/>
+                <input id="toSlider1" type="range" value="5000000" min="0" max="5000000"/>
+            </div>
+            <div class="form_control">
+                <div class="form_control_container">
+                    <div class="form_control_container__time">Min</div>
+                    <input class="form_control_container__time__input" type="number" name="fromInput1" id="fromInput1" value="0" min="0" max="5000000"/>
+                </div>
+
+                <div class="form_control_container">
+                    <div class="form_control_container__time">Max</div>
+                    <input class="form_control_container__time__input" type="number" name="toInput1" id="toInput1" value="5000000" min="0" max="5000000"/>
+                </div>
+            </div>
           </div>
-          <div class="w3-half">
-              <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 140px;">Area &#9013;</button>
-              <div class="d-none shadow rounded menu">
-              <span class="d-block menu-option"><label><input type="checkbox" id="area1" name="areaOption1" value="3 Room">&nbsp; 1</label></span>
-              <span class="d-block menu-option"><label><input type="checkbox" id="area2" name="areaOption2" value="4 Room">&nbsp; 2</label></span>
-              <span class="d-block menu-option"><label><input type="checkbox" id="area3" name="areaOption3" value="5 Room">&nbsp; 3</label></span>
-              </div>
+          <div class="w3-half" style = "width: 240px; margin-left: 30px;">
+            <p>Area</p>
+            <div class="sliders_control">
+                <input id="fromSlider2" type="range" value="0" min="0" max="2200"/>
+                <input id="toSlider2" type="range" value="2200" min="0" max="2200"/>
+            </div>
+            <div class="form_control">
+                <div class="form_control_container">
+                    <div class="form_control_container__time">Min</div>
+                    <input class="form_control_container__time__input" type="number" name="fromInput2" id="fromInput2" value="0" min="0" max="2200"/>
+                </div>
+
+                <div class="form_control_container">
+                    <div class="form_control_container__time">Max</div>
+                    <input class="form_control_container__time__input" type="number" name="toInput2" id="toInput2" value="2200" min="0" max="2200"/>
+                </div>
+            </div>
           </div>
         </div>
-        <button class="w3-button w3-black" type="submit"><i class="fa fa-search w3-margin-right"></i> Search availability</button>
-      </form>
+        <button class="w3-button w3-black" type="submit" name = "request" value = "listings" style = "margin-left:40px;"><i class="fa fa-search w3-margin-right"></i> Search availability</button>
+        <button class="w3-button w3-black" type="submit" name = "request" value = "analysis" style = "margin-left:85px;"><i class="fa fa-search w3-margin-right"></i> Market Analysis</button>
     </div>
+    </form>
     <div class="d-none" id="overlay" onclick="hide(event)"></div>
   </div>
 </header>
@@ -136,6 +300,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
     toggle between hiding and showing the dropdown content
     https://www.w3schools.com/howto/howto_css_dropdown_navbar.asp
     https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_fixed_menu
+    https://medium.com/@predragdavidovic10/native-dual-range-slider-html-css-javascript-91e778134816
+    https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_form_navbar
+    https://dev.to/ara225/how-to-create-a-custom-multi-select-dropdown-2mnb
     */
     function dropDown(event)
     {
@@ -151,6 +318,113 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
         }
         document.getElementById("overlay").classList.add("d-none");
     }
+
+    function controlFromInput(fromSlider, fromInput, toInput, controlSlider)
+    {
+        const [from, to] = getParsed(fromInput, toInput);
+        fillSlider(fromInput, toInput, '#C6C6C6', '#25daa5', controlSlider);
+        if (from > to) {
+            fromSlider.value = to;
+            fromInput.value = to;
+        } else {
+            fromSlider.value = from;
+        }
+    }
+
+    function controlToInput(toSlider, fromInput, toInput, controlSlider) {
+        const [from, to] = getParsed(fromInput, toInput);
+        fillSlider(fromInput, toInput, '#C6C6C6', '#25daa5', controlSlider);
+        setToggleAccessible(toInput);
+        if (from <= to) {
+            toSlider.value = to;
+            toInput.value = to;
+        } else {
+            toInput.value = from;
+        }
+    }
+
+    function controlFromSlider(fromSlider, toSlider, fromInput) {
+      const [from, to] = getParsed(fromSlider, toSlider);
+      fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
+      if (from > to) {
+        fromSlider.value = to;
+        fromInput.value = to;
+      } else {
+        fromInput.value = from;
+      }
+    }
+
+    function controlToSlider(fromSlider, toSlider, toInput) {
+      const [from, to] = getParsed(fromSlider, toSlider);
+      fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
+      setToggleAccessible(toSlider);
+      if (from <= to) {
+        toSlider.value = to;
+        toInput.value = to;
+      } else {
+        toInput.value = from;
+        toSlider.value = from;
+      }
+    }
+
+    function getParsed(currentFrom, currentTo) {
+      const from = parseInt(currentFrom.value, 10);
+      const to = parseInt(currentTo.value, 10);
+      return [from, to];
+    }
+
+    function fillSlider(from, to, sliderColor, rangeColor, controlSlider) {
+        const rangeDistance = to.max-to.min;
+        const fromPosition = from.value - to.min;
+        const toPosition = to.value - to.min;
+        controlSlider.style.background = `linear-gradient(
+          to right,
+          ${sliderColor} 0%,
+          ${sliderColor} ${(fromPosition)/(rangeDistance)*100}%,
+          ${rangeColor} ${((fromPosition)/(rangeDistance))*100}%,
+          ${rangeColor} ${(toPosition)/(rangeDistance)*100}%,
+          ${sliderColor} ${(toPosition)/(rangeDistance)*100}%,
+          ${sliderColor} 100%)`;
+    }
+
+    function setToggleAccessible(currentTarget) {
+      const toSlider1 = document.querySelector('#toSlider1');
+      if (Number(currentTarget.value) <= 0 ) {
+        toSlider1.style.zIndex = 2;
+      } else {
+        toSlider1.style.zIndex = 0;
+      }
+      const toSlider2 = document.querySelector('#toSlider2');
+      if (Number(currentTarget.value) <= 0 ) {
+        toSlider2.style.zIndex = 2;
+      } else {
+        toSlider2.style.zIndex = 0;
+      }
+    }
+
+    const fromSlider1 = document.querySelector('#fromSlider1');
+    const toSlider1 = document.querySelector('#toSlider1');
+    const fromInput1 = document.querySelector('#fromInput1');
+    const toInput1 = document.querySelector('#toInput1');
+    fillSlider(fromSlider1, toSlider1, '#C6C6C6', '#25daa5', toSlider1);
+    setToggleAccessible(toSlider1);
+
+    fromSlider1.oninput = () => controlFromSlider(fromSlider1, toSlider1, fromInput1);
+    toSlider1.oninput = () => controlToSlider(fromSlider1, toSlider1, toInput1);
+    fromInput1.oninput = () => controlFromInput(fromSlider1, fromInput1, toInput1, toSlider1);
+    toInput1.oninput = () => controlToInput(toSlider1, fromInput1, toInput1, toSlider1);
+
+    const fromSlider2 = document.querySelector('#fromSlider2');
+    const toSlider2 = document.querySelector('#toSlider2');
+    const fromInput2 = document.querySelector('#fromInput2');
+    const toInput2 = document.querySelector('#toInput2');
+    fillSlider(fromSlider2, toSlider2, '#C6C6C6', '#25daa5', toSlider2);
+    setToggleAccessible(toSlider2);
+
+    fromSlider2.oninput = () => controlFromSlider(fromSlider2, toSlider2, fromInput2);
+    toSlider2.oninput = () => controlToSlider(fromSlider2, toSlider2, toInput2);
+    fromInput2.oninput = () => controlFromInput(fromSlider2, fromInput2, toInput2, toSlider2);
+    toInput2.oninput = () => controlToInput(toSlider2, fromInput2, toInput2, toSlider2);
 
   </script>
 </body>
