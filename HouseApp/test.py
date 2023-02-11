@@ -10,40 +10,47 @@ app = Flask(__name__)
 # https://imagekit.io/blog/how-to-resize-image-in-html/
 @app.route("/",methods = ["GET","POST"])
 def home():
+
     # listing.html
     # home.html
     return render_template("home.html")
 
-@app.route("/listings",methods = ["GET","POST"])
-def listings():
-    # listing.html
-    # home.html
-    extract = {"ClickProperty": ClickProperty.main(),
-               "BleuBricks": BleuBricks.main(),
-               "DirectHome": DirectHome.main()}
-    # combine all the listing together so to sort them by increasing price later
-
-    listings = [flat for key in extract.keys() for flat in extract[key]]
-    # for flat in listings:
-    #     print(flat)
-    return render_template("listings.html", listings=listings)
-
 # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-@app.route('/filter',methods = ["GET","POST"])
-def form():
-    # option1 = request.args['Name']  # request.form -> dictionary
-    # option2 = request.args["Email"]
-    # option3 = request.args["Message"]
-    option1 = request.args["Option1"]  # request.form -> dictionary
-    option2 = request.args["Option2"]
-    option3 = request.args["Option3"]
-    print(request.args["Option1"])
-    return request.args["Option1"]
+
+@app.route("/listings",methods = ["GET","POST"]) # request.form -> dictionary
+def listings():
+    print(request)
+    if request.method == "GET":
+        if request.args['request'] == "analysis":
+            return redirect(url_for("analysis"))
+        if request.args['request'] == "listings":
+            extract = {"ClickProperty": ClickProperty.main(),
+                       "BleuBricks": BleuBricks.main(),
+                       "DirectHome": DirectHome.main()}
+
+            # combine all the listing together so to sort them by increasing price later
+            listings = [flat for key in extract.keys() for flat in extract[key]]
+            # for flat in listings:
+            #     print(flat)
+            return render_template("listings.html", listings=listings)
+    return render_template(url_for("home"))
 
 
 @app.route('/analysis',methods = ["GET","POST"])
 def analysis():
     return render_template("analysis.html")
+
+
+@app.route('/login',methods = ["GET","POST"])
+def login():
+    if request.method == "GET":
+        username = request.args['username']
+        password = request.args['password']
+        # check database here????????
+        return username + password
+
+    return render_template("home.html")
+
 
 if __name__ == "__main__":
     from waitress import serve
