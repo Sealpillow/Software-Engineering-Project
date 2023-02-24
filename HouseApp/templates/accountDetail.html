@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OnlyFlats</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+<style>
+body{font-family: Arial}
+
+
+.optionButton{
+  outline: 1px solid grey;
+  margin-left:100px;
+  width:250px;
+  height:80px;
+  border:none;
+  background-color:	#DCDCDC;
+}
+.optionButton:hover {
+background-color: #00aff0;
+color: white;
+}
+
+.open-button {
+  background-color: #555;
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  bottom: 23px;
+  width: 200px;
+  height: 31px;
+  margin-top:169px;
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/login button */
+.form-container .btn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+
+.column {
+  float: left;
+  padding: 10px;
+}
+
+.left {
+  width: 25%;
+}
+
+
+</style>
+</head>
+<body class="w3-light-grey">
+
+<!-- Navigation Bar -->
+<div class="w3-top">
+    <div class="w3-bar w3-wide w3-padding w3-card" style = "background-color:#00aff0 ">
+      <a href = "{{ url_for('home') }}"> <img src= "../static/images/logo.png" alt = "text" style="min-width: 150px" height="70" ></a>
+       <!--Float links to the right. Hide them on small screens -->
+    </div>
+</div>
+
+<!-- Header -->
+
+<div class="column left" style = "margin-top:220px;" >
+  <form action="/controller" method ="get">
+  <button class="optionButton" type="submit" name = "request" value = "home">Home Page</button>
+  <button class="optionButton" type="submit" name = "request" value = "accountDetail"  style = "background-color:#00aff0">Account Details</button>
+  <button class="optionButton" type="submit" name = "request" value = "wishlist">WishList</button>
+  <button class="optionButton" type="submit" name = "request" value = "deleteAccount" >Delete Account</button>
+  <button class="optionButton" type="submit" name = "request" value = "logout" >Log out</button>
+  </form>
+</div>
+</div>
+</form>
+<div  class="w3-container w3-display-topleft" style = "margin-left:700px;margin-top:320px; display:flex;">
+  <div>
+    <h2 style = "margin-left:100px; margin-bottom:100px; width:400px; text-align:center;">Hello!</h2>
+    <h4 style = "margin-left:100px;outline: 2px solid grey; width:400px">Email: {{ session['email'] }}</h4>
+    <h4 style = "margin-left:100px;outline: 2px solid grey; width:400px">Password: {{ session['maskPassword'] }}</h4>
+  </div>
+  <button class="open-button" onclick="openForm()">Change Password</button>
+</div>
+
+<div class="form-popup" id="myForm">
+  <form action="/controller" method = "get" class="form-container">
+    <h1>Change Password</h1>
+    <label><b>Enter Old Password</b></label>
+    <input type="text" placeholder="Enter Old Password" name="password" required>
+    <label ><b>Enter New Password</b></label>
+    <input type="password" placeholder="Enter New Password" name="newPassword" required>
+    <label ><b>Re-enter New Password</b></label>
+    <input type="password" placeholder="Re-enter New Password" name="rePassword" required>
+    <button type="submit" class="btn" name = "request" value = "changePassword">Change Password</button>
+    <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+  </form>
+</div>
+
+<script>
+
+    /* When the user clicks on the button,
+    toggle between hiding and showing the dropdown content
+    */
+    function dropDown(event)
+    {
+        event.target.parentElement.children[1].classList.remove("d-none");
+        document.getElementById("overlay").classList.remove("d-none");
+    }
+    function hide(event)
+    {
+        var items = document.getElementsByClassName('menu');
+        for (let i = 0; i < items.length; i++)
+        {
+            items[i].classList.add("d-none");
+        }
+        document.getElementById("overlay").classList.add("d-none");
+    }
+    function openForm() {
+      document.getElementById("myForm").style.display = "block";
+    }
+
+    function closeForm() {
+      document.getElementById("myForm").style.display = "none";
+    }
+
+  </script>
+</body>
+</html>

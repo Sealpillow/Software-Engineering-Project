@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>OnlyFlats</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+
+<style>
+Body,h1{font-family:  Century Gothic}
+  /* Split the screen in half */
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+  background-color: #00aff0;
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+  background-color: white;
+}
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+
+}
+
+input[type=text]{
+  margin-top:20px;
+  margin-left:10px;
+  height:50px;
+  width:500px;
+  font-size: 15px;
+  padding: 2px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+select{
+  margin-top:20px;
+  margin-left:10px;
+  height:50px;
+  width:500px;
+  font-size: 15px;
+  padding: 2px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+button{
+  border-radius: 20px;
+  margin-top:20px;
+  margin-left:10px;
+  height: 30px;
+  width:200px;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  background-color: #A9A9A9;
+  border: none;
+}
+button:hover {
+  background-color: #00aff0;
+  color: white;
+}
+
+/* Style the image inside the centered container, if needed */
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <div class="split left">
+  <div class="centered" >
+
+    <h1>Discover the</h1>
+    <h1>perfect home,</h1>
+    <h1> only with</h1>
+    <div></div>
+
+
+    <a href = "{{ url_for('home') }}"><img src="../static/images/logo.png" style="width:400px"></a>
+  </div>
+</div>
+
+<div class="split right">
+  <div class="centered">
+    <form action = "/controller" method = "get">
+      <h1>Registration</h1>
+      <div><input type="text" placeholder="Email" name="email" ></div>
+      <div><input type="text" placeholder="Password" name="password"></div>
+      <div><input type="text" placeholder="Re-enter Password" name="repassword"></div>
+      <div>
+        <select name="question">
+          <option value="" disabled selected hidden>Please select a personalised question</option>
+          <option value="What was the name of your first stuffed toy?">What was the name of your first stuffed toy?</option>
+          <option value="What was your favorite subject in school?">What was your favorite subject in school?</option>
+          <option value="What do you hate the most?">What do you hate the most?</option>
+        </select>
+      </div>
+      <div><input type="text" placeholder="Answer" name="answer"></div>
+      <button type="submit" name ="request" value ="registerUser">Register</button>
+    </form>
+
+
+  </div>
+</div>
+</body>
+</html>
