@@ -144,7 +144,7 @@ def generateCount(filterMonth,strGraph):
 
     plt.figure(figsize=(50, 30))
     countOrder = filterMonth.town.value_counts().index.tolist()
-    ax = sb.countplot(y="town", data=filterMonth, order= countOrder, orient='h')
+    ax = sb.countplot(y="town", data=filterMonth, order=countOrder, orient='h')
     for p in ax.patches:
         ax.annotate(int(p.get_width()), ((p.get_x() + p.get_width()+1.2), p.get_y()), xytext=(1, -18), fontsize=9, color='#004d00', textcoords='offset points', horizontalalignment='right')
     strGraph = "static/" + strGraph

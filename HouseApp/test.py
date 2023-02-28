@@ -27,7 +27,6 @@ db = SQLAlchemy(app)
 user_wishlist = db.Table("wishlist",
     db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
     db.Column('listing_link',db.String(100),db.ForeignKey('listing.link'))
-
 )
 
 
@@ -85,10 +84,12 @@ def home():
 def listings():
     if request.method == "GET":
         dict = request.args.to_dict('listings')
-        res = dict['listings'].replace("\'", "\"")
+        res = dict['listings'].replace("\'", "\"")  # replace char in string that contain ' to " so that json.load can covert it to json
+        res = res.replace("\"s", "'s")  # incase there are strings that contain 's that was replaced to "s
         dictList = json.loads(res)
         listings = [dictList[list] for list in dictList.keys()]
     return render_template("listings.html", listings=listings)
+
 
 
 
@@ -120,6 +121,7 @@ def wishlist():
         res = dict['listings'].replace("\'", "\"")
         dictList = json.loads(res)
         listings = [dictList[list] for list in dictList.keys()]
+
     return render_template("wishlist.html", listings=listings)
 
 @app.route('/deleteAccount',methods = ["GET","POST"])
@@ -129,47 +131,14 @@ def deleteAccount():
 
 @app.route('/controller',methods = ["GET","POST"])
 def controller():
+    global setup, result
     if request.method == "GET":
         if request.args['request'] == "home":
+            session['prevUrl'] = "home"
             return redirect(url_for("home"))
         elif request.args['request'] == "listings":
-            if len(request.args.getlist('locOption')) != 0:  # new options
-                location = request.args.getlist('locOption')
-                flatType = request.args.getlist('roomOption')
-                bed = request.args.getlist('bedOption')
-                bath = request.args.getlist('bathOption')
-                minPrice = request.args['minPrice']
-                maxPrice = request.args['maxPrice']
-                minArea = request.args['minArea']
-                maxArea = request.args['maxArea']
-                session['locOption'] = location
-                session['roomOption'] = flatType
-                session['bedOption'] = bed
-                session['bathOption'] = bath
-                session['minPrice'] = minPrice
-                session['maxPrice'] = maxPrice
-                session['minArea'] = minArea
-                session['maxArea'] = maxArea
-            else:  # go back to original option state
-                location = session['locOption']
-                flatType = session['roomOption']
-                bed = session['bedOption']
-                bath = session['bathOption']
-                minPrice = session['minPrice']
-                maxPrice = session['maxPrice']
-                minArea = session['minArea']
-                maxArea = session['maxArea']
-            extract = {"ClickProperty": ClickProperty.main(location, flatType, bed, bath, minPrice, maxPrice, minArea, maxArea),
-                       "DirectHome": DirectHome.main(location, flatType, bed, bath, minPrice, maxPrice, minArea, maxArea)}
-            # combine all the listing together so to sort them by increasing price later
-            exList = [flat for key in extract.keys() for flat in extract[key]]
             listings = {}
-            for index, x in enumerate(exList):  # this current user wishlist
-                listings[str(index)] = x
-            return redirect(url_for('listings',listings=listings))
-        elif request.args['request'] == "analysis":
-
-            if len(request.args.getlist('locOption')) != 0:  # new options
+            if len(request.args.getlist('locOption')) != 0:  # user new input options
                 location = request.args.getlist('locOption')
                 flatType = request.args.getlist('roomOption')
                 bed = request.args.getlist('bedOption')
@@ -178,24 +147,76 @@ def controller():
                 maxPrice = request.args['maxPrice']
                 minArea = request.args['minArea']
                 maxArea = request.args['maxArea']
-                session['locOption'] = location
-                session['roomOption'] = flatType
-                session['bedOption'] = bed
-                session['bathOption'] = bath
-                session['minPrice'] = minPrice
-                session['maxPrice'] = maxPrice
-                session['minArea'] = minArea
-                session['maxArea'] = maxArea
+
+                if not setup:  # if session variables not setup, set the variables as empty
+                    session['locOption'] = " "
+                    session['roomOption'] = " "
+                    session['bedOption'] = " "
+                    session['bathOption'] = " "
+                    session['minPrice'] = " "
+                    session['maxPrice'] = " "
+                    session['minArea'] = " "
+                    session['maxArea'] = " "
+                    setup = True
+                # if any of the new input option chosen is not the same as the past, set the session variable
+                if not result or session['locOption'] != location or session['roomOption'] != flatType or session['bedOption'] != bed or session['bathOption'] != bath or session['minPrice'] != minPrice or session['maxPrice'] != maxPrice or session['minArea'] != minArea or session['maxArea'] != maxArea:
+                    session['locOption'] = location
+                    session['roomOption'] = flatType
+                    session['bedOption'] = bed
+                    session['bathOption'] = bath
+                    session['minPrice'] = minPrice
+                    session['maxPrice'] = maxPrice
+                    session['minArea'] = minArea
+                    session['maxArea'] = maxArea
+                    # generate new listings, by web scraping
+                    extract = {"ClickProperty": ClickProperty.main(location, flatType, bed, bath, minPrice, maxPrice, minArea, maxArea),
+                               "DirectHome": DirectHome.main(location, flatType, bed, bath, minPrice, maxPrice, minArea, maxArea)}
+                    # combine all the listing together so to sort them by increasing price later
+                    exList = [flat for key in extract.keys() for flat in extract[key]]
+                    for index, x in enumerate(exList):  # array is converted to dict so that it can be transferred to other app route via request.args.to_dict()
+                        listings[str(index)] = x
+                    result = listings  # store newly generated listings to result
+                else:  # option chosen is the same as the past
+                    listings = result  # set listings to the prev listing result
             else:  # go back to original option state
-                location = session['locOption']
-                flatType = session['roomOption']
-                bed = session['bedOption']
-                bath = session['bathOption']
-                minPrice = session['minPrice']
-                maxPrice = session['maxPrice']
-                minArea = session['minArea']
-                maxArea = session['maxArea']
-            plot.main(location,flatType)
+                listings = result  # set listings to the prev listing result
+            session['prevUrl'] = "listings"
+            return redirect(url_for('listings',listings=listings))
+
+        elif request.args['request'] == "analysis":
+            if len(request.args.getlist('locOption')) != 0:  # user new input options
+                location = request.args.getlist('locOption')
+                flatType = request.args.getlist('roomOption')
+                bed = request.args.getlist('bedOption')
+                bath = request.args.getlist('bathOption')
+                minPrice = request.args['minPrice']
+                maxPrice = request.args['maxPrice']
+                minArea = request.args['minArea']
+                maxArea = request.args['maxArea']
+
+                if not setup:  # if session variables not setup, set the variables as empty
+                    session['locOption'] = " "
+                    session['roomOption'] = " "
+                    session['bedOption'] = " "
+                    session['bathOption'] = " "
+                    session['minPrice'] = " "
+                    session['maxPrice'] = " "
+                    session['minArea'] = " "
+                    session['maxArea'] = " "
+                    setup = True
+                # if any of the new input option chosen is not the same as the past, set the session variable
+                if session['locOption'] != location or session['roomOption'] != flatType or session['prevUrl'] == "listings":
+                    session['locOption'] = location
+                    session['roomOption'] = flatType
+                    session['bedOption'] = bed
+                    session['bathOption'] = bath
+                    session['minPrice'] = minPrice
+                    session['maxPrice'] = maxPrice
+                    session['minArea'] = minArea
+                    session['maxArea'] = maxArea
+                    # generate new analysis
+                    plot.main(location,flatType)
+            session['prevUrl'] = "analysis"
             return redirect(url_for("analysis"))
         elif request.args['request'] == "accountDetail":
             return redirect(url_for("accountDetail"))
@@ -251,7 +272,12 @@ def controller():
                 session["password"] = found_user.password
                 session["maskPassword"] = "*"*len(session["password"])
                 session.permanent = True
-                return redirect(url_for('home'))
+                if session['prevUrl'] == "listings":
+                    return redirect(url_for("controller",request="listings"))
+                if session['prevUrl'] == "analysis":
+                    return redirect(url_for("controller",request="analysis"))
+                else:
+                    return redirect(url_for('home'))
             else:
                 print("not found")
             return redirect(url_for('home'))
@@ -261,7 +287,6 @@ def controller():
         elif request.args['request'] == "changePassword":
             email = session['email']
             newPassword = request.args["newPassword"]
-
             found_user = users.query.filter_by(email=email).first()  # in the user database->find->get filtered by() the first element
             if found_user:
                 session['password'] = newPassword
@@ -284,11 +309,11 @@ def controller():
                 address = info[7]
                 companyImg = info[8]
                 found_user = users.query.filter_by(email=session["email"]).first()  # in the user database->find->get filtered by() the first element
-                found_listing = listing.query.filter_by(link=link).first()
-                if found_listing is None:
+                found_listing = listing.query.filter_by(link=link).first()  # check if listing selected in database
+                if found_listing is None:  # if listing selected is not in database
                     print("listing not found")
-                    newListing = listing(link,listImg,area,room,bath,cost,address,companyImg)
-                    db.session.add(newListing)
+                    newListing = listing(link,listImg,area,room,bath,cost,address,companyImg)  # create new listing entry
+                    db.session.add(newListing)   # add it to database
                     found_listing = newListing
                 found_user.wishlist.append(found_listing)
                 db.session.commit()
@@ -310,7 +335,9 @@ def controller():
 if __name__ == "__main__":
     from waitress import serve
     print("url: http://localhost:8080/")
-    db.create_all() # create database if it doesn't exist
+    setup = False  # indication of initial setup is done
+    result = {}  # contain current extracted result
+    db.create_all()  # create database if it doesn't exist
     # https://stackoverflow.com/questions/51025893/flask-at-first-run-do-not-use-the-development-server-in-a-production-environmen
     serve(app, host="0.0.0.0", port=8080)  # http://localhost:8080/
 
