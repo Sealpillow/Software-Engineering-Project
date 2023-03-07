@@ -15,9 +15,10 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
             border-radius: 48px;
             border: 0.5px solid lightgrey;
             font-size: 1.2em;
-            padding: 2px 10px 2px 15px;
             background-color: white;
+            padding: 2px 10px 2px 15px;
             margin-right: 10px;
+            display: inline-block;
         }
 
         .menu {
@@ -47,12 +48,6 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
         }
 
 
-        .range_container {
-          display: flex;
-          flex-direction: column;
-          width: 20%;
-          margin: 10% auto;
-        }
 
         .sliders_control {
           position: relative;
@@ -62,6 +57,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
         .form_control {
           position: relative;
           display: flex;
+
           justify-content: space-between;
           font-size: 17px;
           color: #635a5a;
@@ -209,30 +205,31 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
           </div>
           {% else %}
           <div class="login-container">
-              <input type="text" placeholder="Email" name="email">
-              <input type="text" placeholder="Password" name="password">
+              <input type="text" placeholder="Email" name="email" required>
+              <input type="text" placeholder="Password" name="password" required>
               <button type="submit" id = "loginButton" name="request" value="login">Login</button>
-              <button type="submit" id = "regButton" name="request" value="register">Register</button>
+              <button type="submit" id = "regButton" name="request" value="register" formnovalidate>Register</button>
           </div>
+
           {% endif %}
       </form>
        <!--Float links to the right. Hide them on small screens -->
     </div>
 </div>
 <!-- Header -->
-<header class="w3-display-container w3-content" style="max-width:1830px;">
-    <img class="w3-image" src="../static/images/bg.jpg" style="position: fixed; height: 100%;left: 12%; ">
+<div>
+    <img class="w3-image" src="../static/images/bg.jpg" style="max-height: 100vh;display: block;margin: auto;">
     <div class="w3-display-middle w3-padding w3-col l5 m">
 
-    <form action="/controller" style =  "transform: translate(0%, 100%);" method ="get">
+    <form action="/controller"  method ="get">
     <div class="w3-container w3-center" style="text-align:center; padding-top:10px; color:white; background-color:#00aff0" >
         <h2><i class="fas fa-home w3-margin-right" ></i>HDB Search</h2>
     </div>
-    <div class="w3-container w3-white w3-padding-48">
-        <div class="w3-row-padding" style=";margin:0-16px;">
-          <div class="w3-half w3-margin-bottom" style = "position:relative; left: 13%; right:30% ;top: 25%;bottom:25%;">
-            <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 110px;">Location &#9013; </button>
-            <div class="d-none shadow rounded menu scrollable-menu" style = "">
+    <div class="w3-container w3-white w3-padding-48 ">
+        <div class="w3-row-padding" style="width:fit-content;margin:auto">
+          <div class="w3-half w3-margin-bottom" >
+            <button onclick="dropDown(event);" class="menu-btn" type="button" style="width:200px;">Location<i class="fa fa-angle-down" style="margin-left:50%;font-size:15px"></i></button>
+            <div class="d-none shadow rounded menu scrollable-menu">
                 <span class="d-block menu-option"><label><input type="checkbox" id="location1" name="locOption" value="Ang Mo Kio" checked>&nbsp; Ang Mo Kio</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="location2" name="locOption" value="Bedok">&nbsp; Bedok</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="location3" name="locOption" value="Bishan">&nbsp; Bishan</label></span>
@@ -261,8 +258,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
                 <span class="d-block menu-option"><label><input type="checkbox" id="location26" name="locOption" value="Yishun">&nbsp; Yishun</label></span>
             </div>
           </div>
-          <div class="w3-half" style = "position:relative; left: 2%; right:30% ;top: 25%;bottom:25%;">
-            <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 110px;">FlatType &#9013; </button>
+           <div class="w3-half w3-margin-bottom">
+            <button onclick="dropDown(event);" class="menu-btn" type="button" style="width:200px;">FlatType<i class="fa fa-angle-down" style="margin-left:50%;font-size:15px"></i></button>
             <div class="d-none shadow rounded menu" >
                 <span class="d-block menu-option"><label><input type="checkbox" id="flat_type1" name="roomOption" value="1 Room" checked>&nbsp; 1 Room</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="flat_type2" name="roomOption" value="2 Room" checked>&nbsp; 2 Room</label></span>
@@ -272,17 +269,17 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
             </div>
           </div>
         </div>
-        <div class="w3-row-padding" style="margin:8px -16px;">
-          <div class="w3-half w3-margin-bottom" style = "position:relative; left: 13%; right:30% ;top: 25%;bottom:25%;">
-              <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 148px;">Bed &#9013;</button>
-              <div class="d-none shadow rounded menu" style = "margin-left: 25px;">
+        <div class="w3-row-padding" style="width:fit-content;margin:auto">
+          <div class="w3-half w3-margin-bottom" >
+            <button onclick="dropDown(event);" class="menu-btn" type="button" style="width:200px;">Bed<i class="fa fa-angle-down" style="margin-left:70%;font-size:15px"></i></button>
+              <div class="d-none shadow rounded menu" >
                 <span class="d-block menu-option"><label><input type="checkbox" id="bed1" name="bedOption" value="1" checked>&nbsp; 1</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="bed2" name="bedOption" value="2" checked>&nbsp; 2</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="bed3" name="bedOption" value="3" checked>&nbsp; 3</label></span>
             </div>
           </div>
-          <div class="w3-half" style = "position:relative; left: 2%; right:30% ;top: 25%;bottom:25%;">
-            <button onclick="dropDown(event);" class="menu-btn" type="button" style="word-spacing: 140px;">Bath &#9013; </button>
+          <div class="w3-half">
+            <button onclick="dropDown(event);" class="menu-btn" type="button" style="width:200px;">Bath<i class="fa fa-angle-down" style="margin-left:70%;font-size:15px"></i></button>
             <div class="d-none shadow rounded menu" >
                 <span class="d-block menu-option"><label><input type="checkbox" id="bath1" name="bathOption" value="1" checked>&nbsp; 1</label></span>
                 <span class="d-block menu-option"><label><input type="checkbox" id="bath2" name="bathOption" value="2" checked>&nbsp; 2</label></span>
@@ -291,9 +288,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
             </div>
           </div>
         </div>
-        <div class="w3-row-padding" style="margin:0px -16px;">
-          <div class="w3-half" style ="width: 240px; position:relative; left: 13%; right:30% ;top: 25%;bottom:25%;">
-            <p>Price</p>
+       <div class="w3-row-padding w3-margin-bottom" style="width:fit-content;margin:auto">
+          <div class="w3-half" style ="width: 220px;">
+              <p>Price</p>
             <div class="sliders_control">
                 <input id="fromSlider1" type="range" value="0" min="0" max="5000000"/>
                 <input id="toSlider1" type="range" value="5000000" min="0" max="5000000"/>
@@ -301,7 +298,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
             <div class="form_control">
                 <div class="form_control_container">
                     <div class="form_control_container__time">Min</div>
-                    <input class="form_control_container__time__input" type="number" name="minPrice" id="minPrice" value="0" min="0" max="5000000"/>
+                    <input class="form_control_container__time__input" type="number" name="minPrice" id="minPrice" value= "0" min="0" max="5000000"/>
                 </div>
 
                 <div class="form_control_container">
@@ -310,9 +307,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
                 </div>
             </div>
           </div>
-          <div class="w3-half" style = "width: 240px; position:relative; left: 17%; right:30% ;top: 25%;bottom:25%;">
+          <div class="w3-half" style = "width: 220px;">
             <p>Area</p>
-            <div class="sliders_control">
+            <div class="sliders_control" >
                 <input id="fromSlider2" type="range" value="0" min="0" max="10000"/>
                 <input id="toSlider2" type="range" value="10000" min="0" max="10000"/>
             </div>
@@ -328,15 +325,17 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
                 </div>
             </div>
           </div>
-        </div>
-        <button class="w3-button" type="submit" name = "request" value = "listings" style = "position:relative; left: 15%; right:30% ;top: 25%;bottom:25%; background-color:#A9A9A9"><i class="fa fa-search w3-margin-right"></i> Search availability</button>
-        <button class="w3-button" type="submit" name = "request" value = "analysis" style = "transform: translate(110%, 0%);background-color:#A9A9A9"><i class="fa fa-search w3-margin-right"></i> Market Analysis</button>
+      </div>
+      <div style="width:fit-content;margin:auto">
+        <button class="w3-button" type="submit" name = "request" value = "listings" style = "position:relative; right: 10%;background-color:#A9A9A9"><i class="fa fa-search w3-margin-right"></i> Search availability</button>
+        <button class="w3-button" type="submit" name = "request" value = "analysis" style = "position:relative; left: 5%;background-color:#A9A9A9"><i class="fa fa-search w3-margin-right"></i> Market Analysis</button>
+      </div>
     </div>
     <div class="d-none" id="overlay" onclick="hide(event)"></div>
     </form>
 
   </div>
-</header>
+</div>
 <script>
 
     /* When the user clicks on the button,
