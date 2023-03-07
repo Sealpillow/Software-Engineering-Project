@@ -151,7 +151,7 @@
 								<!--begin::Content-->
 								<div id="kt_app_content" class="app-content flex-column-fluid">
 									<!--begin::Form-->
-									<form action="#">
+									<form id="filterOptions" method="post">
 										<!--begin::Card-->
 										<div class="card mb-7">
 											<!--begin::Card body-->
@@ -400,8 +400,8 @@
 													<div class="separator separator-dashed mt-9 mb-6"></div>
 													<!--end::Separator-->
 													<div class="align-items-center">
-														<button type="submit" class="btn btn-success me-5">Search Availability</button>
-                                                        <button type="submit" class="btn btn-success me-5">View Market Analysis</button>
+														<button type="submit" class="btn btn-success me-5" id="searchButton">Search Availability</button>
+                                                        <button type="submit" class="btn btn-success me-5" id="analysisButton">View Market Analysis</button>
 													</div>
 												</div>
 												<!--end::Advance form-->
@@ -469,6 +469,19 @@
 		<script src="assets/js/custom/widgets.js"></script>
 		<script src="assets/js/custom/apps/chat/chat.js"></script>
 		<script src="assets/js/custom/utilities/modals/users-search.js"></script>
+		<script>
+			var form=document.getElementById('filterOptions');
+			var searchButton=document.getElementById('searchButton');
+			var analysisButton=document.getElementById('analysisButton');
+
+			searchButton.addEventListener('click', function() {
+				form.action = "Listings-in.html";
+			});
+
+			analysisButton.addEventListener('click', function() {
+				form.action = "MarketAnalysis-in.html";
+			});
+		</script>
 		<!--end::Custom Javascript-->
 		<!--end::Javascript-->
 	</body>
