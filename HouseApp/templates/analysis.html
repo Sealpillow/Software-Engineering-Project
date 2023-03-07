@@ -246,10 +246,10 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
           </div>
           {% else %}
           <div class="login-container">
-              <input type="text" placeholder="Email" name="email">
-              <input type="text" placeholder="Password" name="password">
+              <input type="text" placeholder="Email" name="email" required>
+              <input type="text" placeholder="Password" name="password" required>
               <button type="submit" id = "loginButton" name="request" value="login">Login</button>
-              <button type="submit" id = "regButton" name="request" value="register">Register</button>
+              <button type="submit" id = "regButton" name="request" value="register" formnovalidate>Register</button>
           </div>
           {% endif %}
       </form>
@@ -257,67 +257,68 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
     </div>
 </div>
 
+
   <!-- https://blog.hubspot.com/website/html-dropdown-->
   <form action="/controller" method ="get">
       <!-- https://dev.to/ara225/how-to-create-a-custom-multi-select-dropdown-2mnb -->
-      <div class="col-12 col-md-8 container" >
-          <div class="row col-20" style = "margin-left:200px">
+      <div class="col-12 col-md-10 container w3-center" style="width:fit-content">
+          <div class="row col-22">
               <div>
-                  <button onclick="dropDown(event);" class="menu-btn " type="button"> Location &#9013; </button>
+                  <button onclick="dropDown(event);" class="menu-btn " type="button"> Location <i class="fa fa-angle-down" style="font-size:15px"></i></button>
                   <div class="d-none shadow rounded menu scrollable-menu">
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location1" name="locOption" value="Ang Mo Kio" checked>&nbsp; Ang Mo Kio</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location2" name="locOption" value="Bedok">&nbsp; Bedok</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location3" name="locOption" value="Bishan">&nbsp; Bishan</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location4" name="locOption" value="Bukit Batok">&nbsp; Bukit Batok</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location5" name="locOption" value="Bukit Merah">&nbsp; Bukit Merah</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location6" name="locOption" value="Bukit Panjang">&nbsp; Bukit Panjang</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location7" name="locOption" value="Bukit Timah">&nbsp; Bukit Timah</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location8" name="locOption" value="Central Area">&nbsp; Central Area</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location9" name="locOption" value="Choa Chu Kang">&nbsp; Choa Chu Kang</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location10" name="locOption" value="Clementi">&nbsp; Clementi</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location11" name="locOption" value="Geylang">&nbsp; Geylang</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location12" name="locOption" value="Hougang">&nbsp; Hougang</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location13" name="locOption" value="Jurong East">&nbsp; Jurong East</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location14" name="locOption" value="Jurong West">&nbsp; Jurong West</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location15" name="locOption" value="Kallang/Whampoa">&nbsp; Kallang/Whampoa</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location16" name="locOption" value="Marine Parade">&nbsp; Marine Parade</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location17" name="locOption" value="Pasir Ris">&nbsp; Pasir Ris</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location18" name="locOption" value="Punggol">&nbsp; Punggol</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location19" name="locOption" value="Queenstown">&nbsp; Queenstown</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location20" name="locOption" value="Sembawang">&nbsp; Sembawang</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location21" name="locOption" value="Sengkang">&nbsp; Sengkang</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location22" name="locOption" value="Serangoon">&nbsp; Serangoon</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location23" name="locOption" value="Tampines">&nbsp; Tampines</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location24" name="locOption" value="Toa Payoh">&nbsp; Toa Payoh</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location25" name="locOption" value="Woodlands">&nbsp; Woodlands</label></span>
-                        <span class="d-block menu-option"><label><input type="checkbox" id="location26" name="locOption" value="Yishun">&nbsp; Yishun</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location1" name="locOption" value="Ang Mo Kio" {% if location.AngMoKio %}checked{% endif %}>&nbsp; Ang Mo Kio</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location2" name="locOption" value="Bedok" {% if location.Bedok %}checked{% endif %}>&nbsp; Bedok</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location3" name="locOption" value="Bishan" {% if location.Bishan %}checked{% endif %}>&nbsp; Bishan</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location4" name="locOption" value="Bukit Batok" {% if location.BukitBatok %}checked{% endif %}>&nbsp; Bukit Batok</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location5" name="locOption" value="Bukit Merah" {% if location.BukitMerah %}checked{% endif %}>&nbsp; Bukit Merah</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location6" name="locOption" value="Bukit Panjang" {% if location.BukitPanjang %}checked{% endif %}>&nbsp; Bukit Panjang</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location7" name="locOption" value="Bukit Timah" {% if location.BukitTimah %}checked{% endif %}>&nbsp; Bukit Timah</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location8" name="locOption" value="Central Area" {% if location.CentralArea %}checked{% endif %}>&nbsp; Central Area</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location9" name="locOption" value="Choa Chu Kang" {% if location.ChoaChuKang %}checked{% endif %}>&nbsp; Choa Chu Kang</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location10" name="locOption" value="Clementi" {% if location.Clementi %}checked{% endif %}>&nbsp; Clementi</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location11" name="locOption" value="Geylang" {% if location.Geylang %}checked{% endif %}>&nbsp; Geylang</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location12" name="locOption" value="Hougang" {% if location.Hougang %}checked{% endif %}>&nbsp; Hougang</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location13" name="locOption" value="Jurong East" {% if location.JurongEast %}checked{% endif %}>&nbsp; Jurong East</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location14" name="locOption" value="Jurong West" {% if location.JurongWest %}checked{% endif %}>&nbsp; Jurong West</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location15" name="locOption" value="Kallang/Whampoa" {% if location.KallangWhampoa %}checked{% endif %}>&nbsp; Kallang/Whampoa</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location16" name="locOption" value="Marine Parade" {% if location.MarineParade %}checked{% endif %}>&nbsp; Marine Parade</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location17" name="locOption" value="Pasir Ris" {% if location.PasirRis %}checked{% endif %}>&nbsp; Pasir Ris</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location18" name="locOption" value="Punggol" {% if location.Punggol %}checked{% endif %}>&nbsp; Punggol</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location19" name="locOption" value="Queenstown" {% if location.Queenstown %}checked{% endif %}>&nbsp; Queenstown</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location20" name="locOption" value="Sembawang" {% if location.Sembawang %}checked{% endif %}>&nbsp; Sembawang</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location21" name="locOption" value="Sengkang" {% if location.Sengkang %}checked{% endif %}>&nbsp; Sengkang</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location22" name="locOption" value="Serangoon" {% if location.Serangoon %}checked{% endif %}>&nbsp; Serangoon</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location23" name="locOption" value="Tampines" {% if location.Tampines %}checked{% endif %}>&nbsp; Tampines</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location24" name="locOption" value="Toa Payoh" {% if location.ToaPayoh %}checked{% endif %}>&nbsp; Toa Payoh</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location25" name="locOption" value="Woodlands" {% if location.Woodlands %}checked{% endif %}>&nbsp; Woodlands</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="location26" name="locOption" value="Yishun" {% if location.Yishun %}checked{% endif %}>&nbsp; Yishun</label></span>
                   </div>
               </div>
               <div>
-                  <button onclick="dropDown(event);" class="menu-btn" type="button">Flat Type &#9013; </button>
+                  <button onclick="dropDown(event);" class="menu-btn" type="button">Flat Type <i class="fa fa-angle-down" style="font-size:15px"></i></button>
                   <div class="d-none shadow rounded menu">
-                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type1" name="roomOption" value="1 Room" checked>&nbsp; 1 Room</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type2" name="roomOption" value="2 Room" checked>&nbsp; 2 Room</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type3" name="roomOption" value="3 Room" checked>&nbsp; 3 Room</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type4" name="roomOption" value="4 Room" checked>&nbsp; 4 Room</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type5" name="roomOption" value="5 Room" checked>&nbsp; 5 Room</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type1" name="roomOption" value="1 Room" {% if flatType.Room1 %}checked{% endif %}>&nbsp; 1 Room</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type2" name="roomOption" value="2 Room" {% if flatType.Room2 %}checked{% endif %}>&nbsp; 2 Room</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type3" name="roomOption" value="3 Room" {% if flatType.Room3 %}checked{% endif %}>&nbsp; 3 Room</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type4" name="roomOption" value="4 Room" {% if flatType.Room4 %}checked{% endif %}>&nbsp; 4 Room</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="flat_type5" name="roomOption" value="5 Room" {% if flatType.Room5 %}checked{% endif %}>&nbsp; 5 Room</label></span>
                   </div>
               </div>
               <div>
-                  <button onclick="dropDown(event);" class="menu-btn" type="button">Bed &#9013; </button>
+                  <button onclick="dropDown(event);" class="menu-btn" type="button">Bed <i class="fa fa-angle-down" style="font-size:15px"></i></button>
                   <div class="d-none shadow rounded menu">
-                      <span class="d-block menu-option"><label><input type="checkbox" id="bed1" name="bedOption" value="1" checked>&nbsp; 1</label></span>
-                      <span class="d-block menu-option"><label><input type="checkbox" id="bed2" name="bedOption" value="2" checked>&nbsp; 2</label></span>
-                      <span class="d-block menu-option"><label><input type="checkbox" id="bed3" name="bedOption" value="3" checked>&nbsp; 3</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="bed1" name="bedOption" value="1" {% if bed.bed1 %}checked{% endif %}>&nbsp; 1</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="bed2" name="bedOption" value="2" {% if bed.bed2 %}checked{% endif %}>&nbsp; 2</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="bed3" name="bedOption" value="3" {% if bed.bed3 %}checked{% endif %}>&nbsp; 3</label></span>
                   </div>
               </div>
               <div>
-                  <button onclick="dropDown(event);" class="menu-btn" type="button">Bath &#9013; </button>
+                  <button onclick="dropDown(event);" class="menu-btn" type="button">Bath <i class="fa fa-angle-down" style="font-size:15px"></i></button>
                   <div class="d-none shadow rounded menu">
-                    <span class="d-block menu-option"><label><input type="checkbox" id="bath1" name="bathOption" value="1" checked>&nbsp; 1</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="bath2" name="bathOption" value="2" checked>&nbsp; 2</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="bath3" name="bathOption" value="3" checked>&nbsp; 3</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="bath4" name="bathOption" value="4" checked>&nbsp; 4</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="bath1" name="bathOption" value="1" {% if bath.bath1 %}checked{% endif %}>&nbsp; 1</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="bath2" name="bathOption" value="2" {% if bath.bath2 %}checked{% endif %}>&nbsp; 2</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="bath3" name="bathOption" value="3" {% if bath.bath3 %}checked{% endif %}>&nbsp; 3</label></span>
+                    <span class="d-block menu-option"><label><input type="checkbox" id="bath4" name="bathOption" value="4" {% if bath.bath4 %}checked{% endif %}>&nbsp; 4</label></span>
                   </div>
               </div>
               <div>
@@ -327,45 +328,44 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
 
           </div>
       </div>
-      <div class="w3-row-padding" style="margin-left:150px">
-          <div class="w3-half w3-margin-bottom" style ="width: 240px;margin-left:500px;">
+      <div class="w3-row-padding" style="width:fit-content;margin:auto">
+          <div class="w3-half w3-margin-bottom" style ="width: 240px;">
             <p>Price</p>
             <div class="sliders_control">
-                <input id="fromSlider1" type="range" value="0" min="0" max="5000000"/>
-                <input id="toSlider1" type="range" value="5000000" min="0" max="5000000"/>
+                <input id="fromSlider1" type="range" value={{ selectedMinPrice }} min="0" max="5000000"/>
+                <input id="toSlider1" type="range" value={{ selectedMaxPrice }} min="0" max="5000000"/>
             </div>
             <div class="form_control">
                 <div class="form_control_container">
                     <div class="form_control_container__time">Min</div>
-                    <input class="form_control_container__time__input" type="number" name="minPrice" id="minPrice" value="0" min="0" max="5000000"/>
+                    <input class="form_control_container__time__input" type="number" name="minPrice" id="minPrice" value= {{ selectedMinPrice }} min="0" max="5000000"/>
                 </div>
 
                 <div class="form_control_container">
                     <div class="form_control_container__time">Max</div>
-                    <input class="form_control_container__time__input" type="number" name="maxPrice" id="maxPrice" value="5000000" min="0" max="5000000"/>
+                    <input class="form_control_container__time__input" type="number" name="maxPrice" id="maxPrice" value={{ selectedMaxPrice }} min="0" max="5000000"/>
                 </div>
             </div>
           </div>
           <div class="w3-half" style = "width: 240px; margin-left: 30px;">
             <p>Area</p>
             <div class="sliders_control">
-                <input id="fromSlider2" type="range" value="0" min="0" max="2200"/>
-                <input id="toSlider2" type="range" value="2200" min="0" max="2200"/>
+                <input id="fromSlider2" type="range" value={{ selectedMinArea }} min="0" max="10000"/>
+                <input id="toSlider2" type="range" value={{ selectedMaxArea }} min="0" max="10000"/>
             </div>
             <div class="form_control">
                 <div class="form_control_container">
                     <div class="form_control_container__time">Min</div>
-                    <input class="form_control_container__time__input" type="number" name="minArea" id="minArea" value="0" min="0" max="2200"/>
+                    <input class="form_control_container__time__input" type="number" name="minArea" id="minArea" value={{ selectedMinArea }} min="0" max="10000"/>
                 </div>
 
                 <div class="form_control_container">
                     <div class="form_control_container__time">Max</div>
-                    <input class="form_control_container__time__input" type="number" name="maxArea" id="maxArea" value="2200" min="0" max="2200"/>
+                    <input class="form_control_container__time__input" type="number" name="maxArea" id="maxArea" value={{ selectedMaxArea }} min="0" max="10000"/>
                 </div>
             </div>
           </div>
-        </div>
-
+      </div>
       <div class="d-none" id="overlay" onclick="hide(event)"></div>
   </form>
   <div class="w3-content" style="max-width:1800px;">
@@ -481,27 +481,27 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
 
     const fromSlider1 = document.querySelector('#fromSlider1');
     const toSlider1 = document.querySelector('#toSlider1');
-    const fromInput1 = document.querySelector('#fromInput1');
-    const toInput1 = document.querySelector('#toInput1');
+    const minPrice = document.querySelector('#minPrice');
+    const maxPrice = document.querySelector('#maxPrice');
     fillSlider(fromSlider1, toSlider1, '#C6C6C6', '#25daa5', toSlider1);
     setToggleAccessible(toSlider1);
 
-    fromSlider1.oninput = () => controlFromSlider(fromSlider1, toSlider1, fromInput1);
-    toSlider1.oninput = () => controlToSlider(fromSlider1, toSlider1, toInput1);
-    fromInput1.oninput = () => controlFromInput(fromSlider1, fromInput1, toInput1, toSlider1);
-    toInput1.oninput = () => controlToInput(toSlider1, fromInput1, toInput1, toSlider1);
+    fromSlider1.oninput = () => controlFromSlider(fromSlider1, toSlider1, minPrice);
+    toSlider1.oninput = () => controlToSlider(fromSlider1, toSlider1, maxPrice);
+    minPrice.oninput = () => controlFromInput(fromSlider1, minPrice, maxPrice, toSlider1);
+    maxPrice.oninput = () => controlToInput(toSlider1, minPrice, maxPrice, toSlider1);
 
     const fromSlider2 = document.querySelector('#fromSlider2');
     const toSlider2 = document.querySelector('#toSlider2');
-    const fromInput2 = document.querySelector('#fromInput2');
-    const toInput2 = document.querySelector('#toInput2');
+    const minArea = document.querySelector('#minArea');
+    const maxArea = document.querySelector('#maxArea');
     fillSlider(fromSlider2, toSlider2, '#C6C6C6', '#25daa5', toSlider2);
     setToggleAccessible(toSlider2);
 
-    fromSlider2.oninput = () => controlFromSlider(fromSlider2, toSlider2, fromInput2);
-    toSlider2.oninput = () => controlToSlider(fromSlider2, toSlider2, toInput2);
-    fromInput2.oninput = () => controlFromInput(fromSlider2, fromInput2, toInput2, toSlider2);
-    toInput2.oninput = () => controlToInput(toSlider2, fromInput2, toInput2, toSlider2);
+    fromSlider2.oninput = () => controlFromSlider(fromSlider2, toSlider2, minArea);
+    toSlider2.oninput = () => controlToSlider(fromSlider2, toSlider2, maxArea);
+    minArea.oninput = () => controlFromInput(fromSlider2, minArea, maxArea, toSlider2);
+    maxArea.oninput = () => controlToInput(toSlider2, minArea, maxArea, toSlider2);
 
   </script>
 </body>

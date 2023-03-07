@@ -54,6 +54,16 @@ input[type=text]{
   border-width: 1px;
   border-style: solid;
 }
+input[type=email]{
+  margin-top:20px;
+  margin-left:10px;
+  height:50px;
+  width:500px;
+  font-size: 15px;
+  padding: 2px;
+  border-width: 1px;
+  border-style: solid;
+}
 
 select{
   margin-top:20px;
@@ -108,18 +118,18 @@ button:hover {
   <div class="centered">
     <form action = "/controller" method = "get">
       <h1>Registration</h1>
-      <div><input type="text" placeholder="Email" name="email" ></div>
-      <div><input type="text" placeholder="Password" name="password"></div>
-      <div><input type="text" placeholder="Re-enter Password" name="repassword"></div>
+      <div><input type="email" placeholder="Email" name="email"required></div>
+      <div><input type="text" placeholder="Password" name="password" required></div>
+      <div><input type="text" placeholder="Re-enter Password" name="repassword" required></div>
       <div>
-        <select name="question">
+        <select name="question" required>
           <option value="" disabled selected hidden>Please select a personalised question</option>
           <option value="What was the name of your first stuffed toy?">What was the name of your first stuffed toy?</option>
           <option value="What was your favorite subject in school?">What was your favorite subject in school?</option>
           <option value="What do you hate the most?">What do you hate the most?</option>
         </select>
       </div>
-      <div><input type="text" placeholder="Answer" name="answer"></div>
+      <div><input type="text" placeholder="Answer" name="answer" required></div>
       <button type="submit" name ="request" value ="registerUser">Register</button>
     </form>
 
