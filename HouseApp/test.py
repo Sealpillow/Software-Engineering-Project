@@ -1,5 +1,6 @@
+import numpy as np
 from flask import Flask, redirect, url_for, render_template,request,session
-import ClickProperty,BleuBricks,DirectHome
+import ClickProperty,DirectHome
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 import json
@@ -44,7 +45,7 @@ class users(db.Model):
     #                             listing can be bookmarked by multiple users
 
     # takes in variable to create an object
-    def __init__(self,email,password,question,answer):  # id will automatically appended
+    def __init__(self,email,password,question,answer):  # id will automatically append
         self.email = email
         self.password = password
         self.question = question
@@ -88,7 +89,35 @@ def listings():
         res = res.replace("\"s", "'s")  # incase there are strings that contain 's that was replaced to "s
         dictList = json.loads(res)
         listings = [dictList[list] for list in dictList.keys()]
-    return render_template("listings.html", listings=listings)
+
+        # display selected option based on input
+        location = {"AngMoKio":0, "Bedok":0, "Bishan":0, "BukitBatok":0, "BukitMerah":0,
+                    "BukitPanjang":0,"Bukit Timah":0,"CentralArea":0,"ChoaChuKang":0,"Clementi":0,
+                    "Geylang":0,"Hougang":0,"JurongEast":0,"JurongWest":0,"KallangWhampoa":0,"MarineParade":0,
+                    "PasirRis":0,"Punggol":0,"Queenstown":0,"Sembawang":0,"Sengkang":0,"Serangoon":0,"Tampines":0,
+                    "ToaPayoh":0,"Woodlands":0,"Yishun":0}
+        flatType = {"Room1":0, "Room2":0, "Room3":0, "Room4":0,"Room5":0}
+        bed = {"bed1":0, "bed2":0, "bed3":0}
+        bath = {"bath1":0,"bath2":0,"bath3":0,"bath4":0}
+
+        for selectedLoc in session["locOption"]:
+            selectedLoc = selectedLoc.replace(" ","")
+            selectedLoc = selectedLoc.replace("/","")
+            location[selectedLoc] = 1
+
+        for selectedRoom in session["roomOption"]:
+            selectedRoom = selectedRoom.replace(" ", "")
+            flatType[selectedRoom[1:]+selectedRoom[0]] = 1
+
+        for selectedBed in session["bedOption"]:
+            bed["bed"+selectedBed] = 1
+        for selectedBath in session["bathOption"]:
+            bath["bath"+selectedBath] = 1
+        selectedMinPrice = session['minPrice']
+        selectedMaxPrice = session['maxPrice']
+        selectedMinArea = session['minArea']
+        selectedMaxArea = session['maxArea']
+    return render_template("listings.html", listings=listings,location=location,flatType=flatType,bed=bed,bath=bath,selectedMinPrice=selectedMinPrice,selectedMaxPrice=selectedMaxPrice,selectedMinArea=selectedMinArea,selectedMaxArea=selectedMaxArea)
 
 
 
@@ -99,8 +128,35 @@ def analysis():
     path = "..\HouseApp\static"
     png_files = [f for f in os.listdir(path) if f.endswith('.png')]
     png_files = sorted(png_files, key=lambda fname: int(fname.split('.')[0]))
+    # display selected option based on input
+    location = {"AngMoKio": 0, "Bedok": 0, "Bishan": 0, "BukitBatok": 0, "BukitMerah": 0,
+                "BukitPanjang": 0, "Bukit Timah": 0, "CentralArea": 0, "ChoaChuKang": 0, "Clementi": 0,
+                "Geylang": 0, "Hougang": 0, "JurongEast": 0, "JurongWest": 0, "KallangWhampoa": 0, "MarineParade": 0,
+                "PasirRis": 0, "Punggol": 0, "Queenstown": 0, "Sembawang": 0, "Sengkang": 0, "Serangoon": 0, "Tampines": 0,
+                "ToaPayoh": 0, "Woodlands": 0, "Yishun": 0}
+    flatType = {"Room1": 0, "Room2": 0, "Room3": 0, "Room4": 0, "Room5": 0}
+    bed = {"bed1": 0, "bed2": 0, "bed3": 0}
+    bath = {"bath1": 0, "bath2": 0, "bath3": 0, "bath4": 0}
 
-    return render_template("analysis.html",png_files=png_files,session=session)
+    for selectedLoc in session["locOption"]:
+        selectedLoc = selectedLoc.replace(" ", "")
+        selectedLoc = selectedLoc.replace("/", "")
+        location[selectedLoc] = 1
+
+    for selectedRoom in session["roomOption"]:
+        selectedRoom = selectedRoom.replace(" ", "")
+        flatType[selectedRoom[1:] + selectedRoom[0]] = 1
+
+    for selectedBed in session["bedOption"]:
+        bed["bed" + selectedBed] = 1
+    for selectedBath in session["bathOption"]:
+        bath["bath" + selectedBath] = 1
+    selectedMinPrice = session['minPrice']
+    selectedMaxPrice = session['maxPrice']
+    selectedMinArea = session['minArea']
+    selectedMaxArea = session['maxArea']
+
+    return render_template("analysis.html",png_files=png_files,session=session,location=location,flatType=flatType,bed=bed,bath=bath,selectedMinPrice=selectedMinPrice,selectedMaxPrice=selectedMaxPrice,selectedMinArea=selectedMinArea,selectedMaxArea=selectedMaxArea)
 
 
 @app.route('/register',methods = ["GET","POST"])
@@ -129,6 +185,8 @@ def deleteAccount():
     return render_template("deleteAccount.html")
 
 
+
+
 @app.route('/controller',methods = ["GET","POST"])
 def controller():
     global setup, result
@@ -147,7 +205,7 @@ def controller():
                 maxPrice = request.args['maxPrice']
                 minArea = request.args['minArea']
                 maxArea = request.args['maxArea']
-
+                print(location)
                 if not setup:  # if session variables not setup, set the variables as empty
                     session['locOption'] = " "
                     session['roomOption'] = " "
@@ -218,6 +276,14 @@ def controller():
                     plot.main(location,flatType)
             session['prevUrl'] = "analysis"
             return redirect(url_for("analysis"))
+        elif request.args['request'] == 'sortAscend':
+            listings = dict(sorted(result.items(), key=lambda x: int(x[1][5].replace(",","").replace("$",""))))  # remove all the '$' and ',' and convert to int for comparison
+            session['prevUrl'] = "listings"
+            return redirect(url_for('listings', listings=listings))
+        elif request.args['request'] == 'sortDescend':
+            listings = dict(sorted(result.items(), key=lambda x: -int(x[1][5].replace(",","").replace("$",""))))  # remove all the '$' and ',' and convert to int for comparison
+            session['prevUrl'] = "listings"
+            return redirect(url_for('listings', listings=listings))
         elif request.args['request'] == "accountDetail":
             return redirect(url_for("accountDetail"))
         elif request.args['request'] == "wishlist":
