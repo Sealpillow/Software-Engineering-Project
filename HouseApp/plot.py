@@ -83,12 +83,12 @@ def generateGraph(filteredFrame,town,room,option,monthList,strGraph):  # option 
         plt.plot(xMonth, maxResalePricePerMonth)
         generateAnnotation(xMonth, maxResalePricePerMonth)
         #print("Overall Average Resale Price Graph Generated")
-        strGraph = "static/"+strGraph
+        strGraph = "./HouseApp/static/"+strGraph
     else:
         plt.xlabel('Month')
         plt.ylabel('Average Resale Price')
         #print("Average Resale Price Graph Generated")
-        strGraph = "static/"+strGraph
+        strGraph = "./HouseApp/static/"+strGraph
     plt.title(town + "(" + room + ")")
     path = Path(strGraph)
     if path.is_file():  # check file exist
@@ -132,7 +132,8 @@ def generateBar(filterMonth,option,townList,strGraph):  # min:0, avg:1, max:2
     plt.bar(townList, averageResalePricePerTown)
     generateAnnotation(townList,averageResalePricePerTown)
 
-    strGraph = "static/"+strGraph
+
+    strGraph = "./HouseApp/static/"+strGraph
     path = Path(strGraph)
     if path.is_file():  # check file exist
         os.remove(strGraph)  # remove from directory
@@ -140,14 +141,26 @@ def generateBar(filterMonth,option,townList,strGraph):  # min:0, avg:1, max:2
     plt.close()
 
 
-def generateCount(filterMonth,strGraph):
+def generateCount(filterMonth, townList, strGraph):
 
     plt.figure(figsize=(50, 30))
     countOrder = filterMonth.town.value_counts().index.tolist()
-    ax = sb.countplot(y="town", data=filterMonth, order=countOrder, orient='h')
-    for p in ax.patches:
-        ax.annotate(int(p.get_width()), ((p.get_x() + p.get_width()+1.2), p.get_y()), xytext=(1, -18), fontsize=9, color='#004d00', textcoords='offset points', horizontalalignment='right')
-    strGraph = "static/" + strGraph
+    if len(countOrder) == 0:    #in a case where there is no sale for that month for all of the locations
+        # create empty dataframe with desired columns
+        df = pd.DataFrame(columns=townList)
+
+        # create count plot with no data but with columns
+        sb.countplot(data=df, orient='h')
+
+        # set axis labels and ticks
+        plt.ylabel('Town')
+        plt.xlabel('Count')
+        plt.xlim(0, 100)
+    else:
+        ax = sb.countplot(y="town", data=filterMonth, order=countOrder, orient='h')
+        for p in ax.patches:
+            ax.annotate(int(p.get_width()), ((p.get_x() + p.get_width()+1.2), p.get_y()), xytext=(1, -18), fontsize=9, color='#004d00', textcoords='offset points', horizontalalignment='right')
+    strGraph = "./HouseApp/static/" + strGraph
     path = Path(strGraph)
     if path.is_file():  # check file exist
         os.remove(strGraph)  # remove from directory
@@ -163,12 +176,11 @@ def generateCount(filterMonth,strGraph):
 
 def main(inputLocationsList,inputRoomsList):
 
-    directory = '..\HouseApp\static'
+    directory = './HouseApp/static'
     for filename in os.listdir(directory):
         if filename.endswith('.png'):
             os.remove(os.path.join(directory, filename))
-
-    response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3&limit=145156")
+    response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3&limit=148189")
     if response.status_code !=200:
         print("Api cant be found")
     data = response.json()
@@ -195,7 +207,7 @@ def main(inputLocationsList,inputRoomsList):
     generateBar(filterMonth, 0, townList,"0.png")  # find the min resale price based on filter on that month
     generateBar(filterMonth, 1, townList,"1.png")  # find the avg resale price based on filter on that month
     generateBar(filterMonth, 2, townList,"2.png")  # find the max resale price based on filter on that month
-    generateCount(filterMonth,"3.png")  # find the num of resale flats based on filter on that month
+    generateCount(filterMonth, townList, "3.png")  # find the num of resale flats based on filter on that month
 
     count = 4
     for inputTown in inputLocationsList: # user input

@@ -125,7 +125,7 @@ def listings():
 @app.route('/analysis',methods = ["GET","POST"])
 def analysis():
 
-    path = "..\HouseApp\static"
+    path = ".\HouseApp\static"
     png_files = [f for f in os.listdir(path) if f.endswith('.png')]
     png_files = sorted(png_files, key=lambda fname: int(fname.split('.')[0]))
     # display selected option based on input
@@ -215,6 +215,7 @@ def controller():
                     session['maxPrice'] = " "
                     session['minArea'] = " "
                     session['maxArea'] = " "
+                    session['prevUrl'] = " "
                     setup = True
                 # if any of the new input option chosen is not the same as the past, set the session variable
                 if not result or session['locOption'] != location or session['roomOption'] != flatType or session['bedOption'] != bed or session['bathOption'] != bath or session['minPrice'] != minPrice or session['maxPrice'] != maxPrice or session['minArea'] != minArea or session['maxArea'] != maxArea:
@@ -261,6 +262,7 @@ def controller():
                     session['maxPrice'] = " "
                     session['minArea'] = " "
                     session['maxArea'] = " "
+                    session['prevUrl'] = " "
                     setup = True
                 # if any of the new input option chosen is not the same as the past, set the session variable
                 if session['locOption'] != location or session['roomOption'] != flatType or session['prevUrl'] == "listings":
@@ -321,6 +323,7 @@ def controller():
             if found_user:
                 print("exist")
                 session["email"] = found_user.email
+                return render_template("register.html", account_exits=True)
             else:
                 print("added")
                 newUser = users(email,password,question,answer)
@@ -340,7 +343,7 @@ def controller():
                 session.permanent = True
                 if session['prevUrl'] == "listings":
                     return redirect(url_for("controller",request="listings"))
-                if session['prevUrl'] == "analysis":
+                elif session['prevUrl'] == "analysis":
                     return redirect(url_for("controller",request="analysis"))
                 else:
                     return redirect(url_for('home'))
@@ -403,7 +406,8 @@ if __name__ == "__main__":
     print("url: http://localhost:8080/")
     setup = False  # indication of initial setup is done
     result = {}  # contain current extracted result
-    db.create_all()  # create database if it doesn't exist
+    with app.app_context():
+        db.create_all()  # create database if it doesn't exist
     # https://stackoverflow.com/questions/51025893/flask-at-first-run-do-not-use-the-development-server-in-a-production-environmen
     serve(app, host="0.0.0.0", port=8080)  # http://localhost:8080/
 
