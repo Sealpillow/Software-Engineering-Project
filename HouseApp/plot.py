@@ -50,7 +50,7 @@ def generateGraph(filteredFrame,town,room,option,monthList,strGraph):  # option 
     minResalePricePerMonth = []
     maxResalePricePerMonth = []
     selectedTownAverageResalePricePerMonth = []
-    for i in range(start, end):  # yAxis
+    for i in range(start, end-1):  # yAxis, -1 to excluded current month
         sum = 0
         counter = 0
         temp = []
@@ -70,7 +70,7 @@ def generateGraph(filteredFrame,town,room,option,monthList,strGraph):  # option 
         minResalePricePerMonth.append(minimum)
         maxResalePricePerMonth.append(maximum)
 
-    xMonth = monthList[start:]  # get all xAxis
+    xMonth = monthList[start:-1]  # get all xAxis, -1 to excluded current month
     plt.figure(figsize=(30, 20))
     plt.ticklabel_format(useOffset=False, axis='y')
     plt.plot(xMonth, selectedTownAverageResalePricePerMonth)
@@ -83,12 +83,10 @@ def generateGraph(filteredFrame,town,room,option,monthList,strGraph):  # option 
         plt.plot(xMonth, maxResalePricePerMonth)
         generateAnnotation(xMonth, maxResalePricePerMonth)
         #print("Overall Average Resale Price Graph Generated")
-        strGraph = "./HouseApp/static/"+strGraph
     else:
         plt.xlabel('Month')
         plt.ylabel('Average Resale Price')
         #print("Average Resale Price Graph Generated")
-        strGraph = "./HouseApp/static/"+strGraph
     plt.title(town + "(" + room + ")")
     path = Path(strGraph)
     if path.is_file():  # check file exist
@@ -133,7 +131,6 @@ def generateBar(filterMonth,option,townList,strGraph):  # min:0, avg:1, max:2
     generateAnnotation(townList,averageResalePricePerTown)
 
 
-    strGraph = "./HouseApp/static/"+strGraph
     path = Path(strGraph)
     if path.is_file():  # check file exist
         os.remove(strGraph)  # remove from directory
@@ -160,7 +157,6 @@ def generateCount(filterMonth, townList, strGraph):
         ax = sb.countplot(y="town", data=filterMonth, order=countOrder, orient='h')
         for p in ax.patches:
             ax.annotate(int(p.get_width()), ((p.get_x() + p.get_width()+1.2), p.get_y()), xytext=(1, -18), fontsize=9, color='#004d00', textcoords='offset points', horizontalalignment='right')
-    strGraph = "./HouseApp/static/" + strGraph
     path = Path(strGraph)
     if path.is_file():  # check file exist
         os.remove(strGraph)  # remove from directory
@@ -176,11 +172,14 @@ def generateCount(filterMonth, townList, strGraph):
 
 def main(inputLocationsList,inputRoomsList):
 
-    directory = './HouseApp/static'
-    for filename in os.listdir(directory):
+    path = "static/"
+    for filename in os.listdir(path):
         if filename.endswith('.png'):
-            os.remove(os.path.join(directory, filename))
-    response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3&limit=148189")
+            os.remove(os.path.join(path, filename))
+    response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3")
+    data = response.json()
+    recordLimit = data['result']['total']
+    response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3&limit=" + str(recordLimit))
     if response.status_code !=200:
         print("Api cant be found")
     data = response.json()
@@ -190,13 +189,7 @@ def main(inputLocationsList,inputRoomsList):
 
     town = Data["town"]
     townList = town.unique().tolist()
-    flatInfoPerTown = {}
-    # append every data based on the town
-    for i in townList:
-        flatInfoPerTown[i] = Data[Data["town"] == i]
 
-    # General data, month (m) set based on prev month
-    m = "2023-01"
     # get previous month data
     now = datetime.datetime.now()
     current_year = str(now.year)
@@ -204,10 +197,16 @@ def main(inputLocationsList,inputRoomsList):
     strMonth = ('0'+str(prev_month)) if prev_month<10 else str(prev_month)
     date = current_year+"-"+strMonth
     filterMonth = Data[Data["month"] == date]
-    generateBar(filterMonth, 0, townList,"0.png")  # find the min resale price based on filter on that month
-    generateBar(filterMonth, 1, townList,"1.png")  # find the avg resale price based on filter on that month
-    generateBar(filterMonth, 2, townList,"2.png")  # find the max resale price based on filter on that month
-    generateCount(filterMonth, townList, "3.png")  # find the num of resale flats based on filter on that month
+
+    flatInfoPerTown = {}
+    # append every data based on the town
+    for i in townList:
+        flatInfoPerTown[i] = Data[Data["town"] == i]
+
+    generateBar(filterMonth, 0, townList,path + "0.png")  # find the min resale price based on filter on that month
+    generateBar(filterMonth, 1, townList,path + "1.png")  # find the avg resale price based on filter on that month
+    generateBar(filterMonth, 2, townList,path + "2.png")  # find the max resale price based on filter on that month
+    generateCount(filterMonth, townList, path + "3.png")  # find the num of resale flats based on filter on that month
 
     count = 4
     for inputTown in inputLocationsList: # user input
@@ -216,7 +215,7 @@ def main(inputLocationsList,inputRoomsList):
             filterRoom = filterTown[filterTown["flat_type"] == inputRoom.upper()]
             # Specific data filter: town: BEDOK, room = 5 ROOM   -> if room not stated, assumed to be all
             # generateGraph(filterRoom, inputTown, inputRoom, 0, monthList,str(count)+".png")  # find the Average Resale Price based on filter and the past 12 months
-            generateGraph(filterRoom, inputTown, inputRoom, 1, monthList,str(count)+".png")  # find the Overall Resale Price based on filter and the past 12 months
+            generateGraph(filterRoom, inputTown, inputRoom, 1, monthList,path+str(count)+".png")  # find the Overall Resale Price based on filter and the past 12 months
             count += 1
             # print(findMinMax(filterRoom)) #
 
