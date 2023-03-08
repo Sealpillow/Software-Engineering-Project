@@ -111,6 +111,7 @@ def listings():
 
         for selectedBed in session["bedOption"]:
             bed["bed"+selectedBed] = 1
+
         for selectedBath in session["bathOption"]:
             bath["bath"+selectedBath] = 1
         selectedMinPrice = session['minPrice']
@@ -319,11 +320,10 @@ def controller():
             password = request.args["password"]
             question = request.args['question']
             answer = request.args['answer']
-            found_user = users.query.filter_by(email=email).first() # in the user database->find->get filtered by() the first element
+            found_user = users.query.filter_by(email=email).first()  # in the user database->find->get filtered by() the first element
             if found_user:
                 print("exist")
-                session["email"] = found_user.email
-                return render_template("register.html", account_exits=True)
+                return redirect(url_for('register', account_exists=True))
             else:
                 print("added")
                 newUser = users(email,password,question,answer)
