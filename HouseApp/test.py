@@ -1,5 +1,5 @@
 import numpy as np
-from flask import Flask, redirect, url_for, render_template,request,session
+from flask import Flask, redirect, url_for, render_template,request,session,flash
 import ClickProperty,DirectHome
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
@@ -9,7 +9,7 @@ import plot
 app = Flask(__name__)
 # for sessions
 app.secret_key = "dfhfyufnfhhfbf"
-app.permanent_session_lifetime = timedelta(minutes=5)
+# app.permanent_session_lifetime = timedelta(minutes=5)
 # https://fontawesome.com/v4/icons/
 # https://grantaguinaldo.com/rendering-variables-python-flask/
 # https://stackoverflow.com/questions/67971131/how-to-access-and-display-specific-list-item-in-flask
@@ -162,7 +162,9 @@ def analysis():
 
 @app.route('/register',methods = ["GET","POST"])
 def register():
-    return render_template("register.html")
+    if "registered" in session:
+        flash("Account Already Registered")
+    return render_template("register.html",session=session)
 
 
 @app.route('/accountDetail',methods = ["GET","POST"])
@@ -192,6 +194,8 @@ def deleteAccount():
 def controller():
     global setup, result
     if request.method == "GET":
+        if "registered" in session:
+            session.pop("registered", None)
         if request.args['request'] == "home":
             session['prevUrl'] = "home"
             return redirect(url_for("home"))
@@ -206,7 +210,7 @@ def controller():
                 maxPrice = request.args['maxPrice']
                 minArea = request.args['minArea']
                 maxArea = request.args['maxArea']
-                print(location)
+
                 if not setup:  # if session variables not setup, set the variables as empty
                     session['locOption'] = " "
                     session['roomOption'] = " "
@@ -323,13 +327,14 @@ def controller():
             found_user = users.query.filter_by(email=email).first()  # in the user database->find->get filtered by() the first element
             if found_user:
                 print("exist")
-                return redirect(url_for('register', account_exists=True))
+                session["registered"] = " "
+                return redirect(url_for('register'))
             else:
                 print("added")
                 newUser = users(email,password,question,answer)
                 db.session.add(newUser)
                 db.session.commit()
-            return redirect(url_for('register'))
+                return redirect(url_for('register'))
         elif request.args['request'] == "login":
             email = request.args['email']
             password = request.args['password']

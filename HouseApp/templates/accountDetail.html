@@ -15,18 +15,18 @@ body{font-family: Arial}
 
 .optionButton{
   outline: 1px solid grey;
-  margin-left:100px;
-  width:250px;
+  margin-left:30%;
+  width:50%;
   height:80px;
   border:none;
   background-color:	#DCDCDC;
 }
 .optionButton:hover {
-background-color: #00aff0;
-color: white;
+  background-color: #00aff0;
+  color: white;
 }
 
-.open-button {
+.changePassword {
   background-color: #555;
   color: white;
   border: none;
@@ -50,7 +50,6 @@ color: white;
 
 /* Add styles to the form container */
 .form-container {
-  max-width: 300px;
   padding: 10px;
   background-color: white;
 }
@@ -88,17 +87,19 @@ color: white;
 }
 
 /* Add some hover effects to buttons */
-.form-container .btn:hover, .open-button:hover {
+.form-container .btn:hover, .changePassword:hover {
   opacity: 1;
 }
 
 .column {
   float: left;
   padding: 10px;
+
 }
 
 .left {
   width: 25%;
+  margin-top:15%
 }
 
 
@@ -116,7 +117,7 @@ color: white;
 
 <!-- Header -->
 
-<div class="column left" style = "margin-top:220px;" >
+<div class="column left">
   <form action="/controller" method ="get">
   <button class="optionButton" type="submit" name = "request" value = "home">Home Page</button>
   <button class="optionButton" type="submit" name = "request" value = "accountDetail"  style = "background-color:#00aff0">Account Details</button>
@@ -133,7 +134,7 @@ color: white;
     <h4 style = "margin-left:100px;outline: 2px solid grey; width:400px">Email: {{ session['email'] }}</h4>
     <h4 style = "margin-left:100px;outline: 2px solid grey; width:400px">Password: {{ session['maskPassword'] }}</h4>
   </div>
-  <button class="open-button" onclick="openForm()">Change Password</button>
+  <button class="changePassword" onclick="openForm()">Change Password</button>
 </div>
 
 <div class="form-popup" id="myForm">

@@ -99,42 +99,45 @@ button:hover {
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
 </head>
 <body>
-  <div class="split left">
-  <div class="centered" >
-
-    <h1>Discover the</h1>
-    <h1>perfect home,</h1>
-    <h1> only with</h1>
-    <div></div>
-
-
-    <a href = "{{ url_for('home') }}"><img src="../static/images/logo.png" style="width:400px"></a>
+  <div class="split left" >
+    <div class="centered" >
+      <h1>Discover the</h1>
+      <h1>perfect home,</h1>
+      <h1> only with</h1>
+      <div></div>
+      <a href = "{{ url_for('home') }}"><img src="../static/images/logo.png" style="width:400px" ></a>
+    </div>
   </div>
-</div>
-
-<div class="split right">
-  <div class="centered">
-    <form action = "/controller" method = "get">
-      <h1>Registration</h1>
-      <div><input type="email" placeholder="Email" name="email"required></div>
-      <div><input type="text" placeholder="Password" name="password" required></div>
-      <div><input type="text" placeholder="Re-enter Password" name="repassword" required></div>
-      <div>
-        <select name="question" required>
-          <option value="" disabled selected hidden>Please select a personalised question</option>
-          <option value="What was the name of your first stuffed toy?">What was the name of your first stuffed toy?</option>
-          <option value="What was your favorite subject in school?">What was your favorite subject in school?</option>
-          <option value="What do you hate the most?">What do you hate the most?</option>
-        </select>
-      </div>
-      <div><input type="text" placeholder="Answer" name="answer" required></div>
-      <button type="submit" name ="request" value ="registerUser">Register</button>
-    </form>
-
-
+  <div class="split right">
+    <div class="centered">
+      <form action = "/controller" method = "get">
+        <h1>Registration</h1>
+        <div><input type="email" placeholder="Email" name="email"required></div>
+        <div><input type="text" placeholder="Password" name="password" required></div>
+        <div><input type="text" placeholder="Re-enter Password" name="repassword" required></div>
+        <div>
+          <select name="question" required>
+            <option value="" disabled selected hidden>Please select a personalised question</option>
+            <option value="What was the name of your first stuffed toy?">What was the name of your first stuffed toy?</option>
+            <option value="What was your favorite subject in school?">What was your favorite subject in school?</option>
+            <option value="What do you hate the most?">What do you hate the most?</option>
+          </select>
+        </div>
+        <div><input type="text" placeholder="Answer" name="answer" required></div>
+        <button type="submit" name ="request" value ="registerUser">Register</button>
+        {% with messages =  get_flashed_messages() %}
+        {% if messages %}  <!--check any message to display-->
+            {% for msg in messages %}
+                <p> {{msg}} </p>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+      </form>
+    </div>
   </div>
-</div>
+
 </body>
 </html>
