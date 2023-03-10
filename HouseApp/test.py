@@ -119,8 +119,8 @@ def listings():
 
 @app.route('/analysis',methods = ["GET","POST"])
 def analysis():
-    # path = "./HouseApp/static/" # if visual studio
-    path = ".\static"  # if pycharm
+    path = "./HouseApp/static/" # if visual studio
+    # path = ".\static"  # if pycharm
     png_files = [f for f in os.listdir(path) if f.endswith('.png')]
     png_files = sorted(png_files, key=lambda fname: int(fname.split('.')[0]))
     # display selected option based on input
