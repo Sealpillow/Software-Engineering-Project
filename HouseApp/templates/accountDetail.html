@@ -26,11 +26,11 @@ body{font-family: Arial}
   background-color:	#DCDCDC;
 }
 .optionButton:hover {
-background-color: #00aff0;
-color: white;
+  background-color: #00aff0;
+  color: white;
 }
 
-.open-button {
+.changePassword {
   background-color: #555;
   color: white;
   border: none;
@@ -61,7 +61,6 @@ color: white;
 
 /* Add styles to the form container */
 .form-container {
-  max-width: 300px;
   padding: 10px;
   background-color: white;
 }
@@ -99,17 +98,19 @@ color: white;
 }
 
 /* Add some hover effects to buttons */
-.form-container .btn:hover, .open-button:hover {
+.form-container .btn:hover, .changePassword:hover {
   opacity: 1;
 }
 
 .column {
   float: left;
   padding: 10px;
+
 }
 
 .left {
   width: 25%;
+  margin-top:15%
 }
 
 .details-box {
@@ -168,6 +169,8 @@ h4 {
     <div class="details-box">Password: {{ session['maskPassword'] }}</div> -->
   </div>
   <button class="open-button" onclick="openForm()" style="margin-left: 1vw;";">Change Password</button>
+  <!-- <button class="changePassword" onclick="openForm()">Change Password</button> -->
+
 </div>
 
 <div class="form-popup" id="myForm">
