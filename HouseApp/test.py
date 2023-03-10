@@ -99,8 +99,8 @@ def listings():
                     "PasirRis":0,"Punggol":0,"Queenstown":0,"Sembawang":0,"Sengkang":0,"Serangoon":0,"Tampines":0,
                     "ToaPayoh":0,"Woodlands":0,"Yishun":0}
         flatType = {"Room1":0, "Room2":0, "Room3":0, "Room4":0,"Room5":0}
-        bed = {"bed1":0, "bed2":0, "bed3":0}
-        bath = {"bath1":0,"bath2":0,"bath3":0,"bath4":0}
+        bed = {"bed1":0, "bed2":0, "bed3":0, "bed4":0, "bed5":0}
+        bath = {"bath1":0,"bath2":0,"bath3":0}
 
         for selectedLoc in session["locOption"]:
             selectedLoc = selectedLoc.replace(" ","")
@@ -127,8 +127,8 @@ def listings():
 
 @app.route('/analysis',methods = ["GET","POST"])
 def analysis():
-
-    path = ".\static"
+    # path = "./HouseApp/static/" # if visual studio
+    path = ".\static"  # if pycharm
     png_files = [f for f in os.listdir(path) if f.endswith('.png')]
     png_files = sorted(png_files, key=lambda fname: int(fname.split('.')[0]))
     # display selected option based on input
@@ -138,8 +138,8 @@ def analysis():
                 "PasirRis": 0, "Punggol": 0, "Queenstown": 0, "Sembawang": 0, "Sengkang": 0, "Serangoon": 0, "Tampines": 0,
                 "ToaPayoh": 0, "Woodlands": 0, "Yishun": 0}
     flatType = {"Room1": 0, "Room2": 0, "Room3": 0, "Room4": 0, "Room5": 0}
-    bed = {"bed1": 0, "bed2": 0, "bed3": 0}
-    bath = {"bath1": 0, "bath2": 0, "bath3": 0, "bath4": 0}
+    bed = {"bed1": 0, "bed2": 0, "bed3": 0, "bed4": 0, "bed5": 0}
+    bath = {"bath1": 0, "bath2": 0, "bath3": 0}
 
     for selectedLoc in session["locOption"]:
         selectedLoc = selectedLoc.replace(" ", "")

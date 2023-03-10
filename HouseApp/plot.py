@@ -172,8 +172,8 @@ def generateCount(filterMonth, townList, strGraph):
 
 def main(inputLocationsList,inputRoomsList):
 
-    # path = "/static/"
-    path = "./HouseApp/static/"
+    # path = "./HouseApp/static/" # if visual studio
+    path = "static/"  # if pycharm
     for filename in os.listdir(path):
         if filename.endswith('.png'):
             os.remove(os.path.join(path, filename))

@@ -306,9 +306,11 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
               <div>
                   <button onclick="dropDown(event);" class="menu-btn" type="button">Bed <i class="fa fa-angle-down" style="font-size:15px"></i></button>
                   <div class="d-none shadow rounded menu">
-                    <span class="d-block menu-option"><label><input type="checkbox" id="bed1" name="bedOption" value="1" {% if bed.bed1 %}checked{% endif %}>&nbsp; 1</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="bed2" name="bedOption" value="2" {% if bed.bed2 %}checked{% endif %}>&nbsp; 2</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="bed3" name="bedOption" value="3" {% if bed.bed3 %}checked{% endif %}>&nbsp; 3</label></span>
+                <span class="d-block menu-option"><label><input type="checkbox" id="bed1" name="bedOption" value="1" {% if bed.bed1 %}checked{% endif %}>&nbsp; 1</label></span>
+                <span class="d-block menu-option"><label><input type="checkbox" id="bed2" name="bedOption" value="2" {% if bed.bed2 %}checked{% endif %}>&nbsp; 2</label></span>
+                <span class="d-block menu-option"><label><input type="checkbox" id="bed3" name="bedOption" value="3" {% if bed.bed3 %}checked{% endif %}>&nbsp; 3</label></span>
+                <span class="d-block menu-option"><label><input type="checkbox" id="bed4" name="bedOption" value="4" {% if bed.bed4 %}checked{% endif %}>&nbsp; 4</label></span>
+                <span class="d-block menu-option"><label><input type="checkbox" id="bed5" name="bedOption" value="5" {% if bed.bed5 %}checked{% endif %}>&nbsp; 5</label></span>
                   </div>
               </div>
               <div>
@@ -317,7 +319,6 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
                     <span class="d-block menu-option"><label><input type="checkbox" id="bath1" name="bathOption" value="1" {% if bath.bath1 %}checked{% endif %}>&nbsp; 1</label></span>
                     <span class="d-block menu-option"><label><input type="checkbox" id="bath2" name="bathOption" value="2" {% if bath.bath2 %}checked{% endif %}>&nbsp; 2</label></span>
                     <span class="d-block menu-option"><label><input type="checkbox" id="bath3" name="bathOption" value="3" {% if bath.bath3 %}checked{% endif %}>&nbsp; 3</label></span>
-                    <span class="d-block menu-option"><label><input type="checkbox" id="bath4" name="bathOption" value="4" {% if bath.bath4 %}checked{% endif %}>&nbsp; 4</label></span>
                   </div>
               </div>
               <div>
