@@ -12,11 +12,6 @@ app = Flask(__name__)
 # for sessions
 app.secret_key = "dfhfyufnfhhfbf"
 # app.permanent_session_lifetime = timedelta(minutes=5)
-# https://fontawesome.com/v4/icons/
-# https://grantaguinaldo.com/rendering-variables-python-flask/
-# https://stackoverflow.com/questions/67971131/how-to-access-and-display-specific-list-item-in-flask
-# https://stackoverflow.com/questions/71224437/how-to-build-an-html-table-using-a-for-loop-in-flask
-# https://imagekit.io/blog/how-to-resize-image-in-html/
 
 # for sql
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.sqlite3"
@@ -55,9 +50,6 @@ class users(db.Model):
 
 
 class listing(db.Model):
-    # _id = db.Column("id",db.Integer,primary_key=True)  # primary to reference to other attribute
-    # email = db.Column("name",db.String(sizeofString)),text of column="email"
-    # email = db.Column(db.String(sizeofString)),text of column->follow the variable = "email"
     link = db.Column(db.String(100),primary_key=True)  # will be assumed as attributes
     listImg = db.Column(db.String(100))
     area = db.Column(db.String(100))
@@ -168,7 +160,8 @@ def register():
         flash("Account Already Registered")
     elif "newlyRegistered" in session:
         flash("Account created")
-
+    elif "error" in session:
+        flash("Ensure Password and Re-enter password are the same")
     return render_template("register.html",session=session)
 
 
@@ -207,6 +200,8 @@ def reset():
 def controller():
     global setup, result
     if request.method == "GET":
+        if "error" in session:  # it removes existing session of "error", will be set again if requirement met again
+            session.pop("error", None)
         if "registered" in session:  # it removes existing session of "registered", will be set again if requirement met again
             session.pop("registered", None)
         if "validAcc" in session:  # it removes existing session of "validAcc", will be set again if requirement met again
@@ -344,8 +339,12 @@ def controller():
         elif request.args["request"] == "registerUser":
             email = request.args["email"]
             password = request.args["password"]
+            repassword = request.args["repassword"]
             question = request.args['question']
             answer = request.args['answer']
+            if password!=repassword:
+                session["error"] = " "
+                return redirect(url_for('register'))
             found_user = users.query.filter_by(email=email).first()  # in the user database->find->get filtered by() the first element
             if found_user:
                 print("exist")
@@ -375,7 +374,6 @@ def controller():
                     return redirect(url_for("controller",request="listings"))
                 elif session['prevUrl'] == "analysis":
                     return redirect(url_for("controller",request="analysis"))
-
             else:
                 print("not found")
             return redirect(url_for('home'))
@@ -470,6 +468,5 @@ if __name__ == "__main__":
     result = {}  # contain current extracted result
     with app.app_context():
         db.create_all()  # create database if it doesn't exist
-    # https://stackoverflow.com/questions/51025893/flask-at-first-run-do-not-use-the-development-server-in-a-production-environmen
     serve(app, host="0.0.0.0", port=8080)  # http://localhost:8080/
 
