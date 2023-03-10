@@ -5,12 +5,12 @@ from email.utils import formataddr
 
 # Your email account credentials
 def main(user_email,newPassword):
-    username = "luatan68@hotmail.com"
-    password = "brian99"
+    username = "OnlyFlats@hotmail.com"
+    password = "iloveNTU2!"
 
     # Sender's name and email address
     sender_name = 'OnlyFlats'
-    sender_email = 'luatan68@hotmail.com'
+    sender_email = 'OnlyFlats@hotmail.com'
 
     # Recipient's email address
     recipient_email = user_email
