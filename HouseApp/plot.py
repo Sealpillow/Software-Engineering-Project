@@ -172,7 +172,8 @@ def generateCount(filterMonth, townList, strGraph):
 
 def main(inputLocationsList,inputRoomsList):
 
-    path = "static/"
+    # path = "/static/"
+    path = "./HouseApp/static/"
     for filename in os.listdir(path):
         if filename.endswith('.png'):
             os.remove(os.path.join(path, filename))

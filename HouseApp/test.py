@@ -126,7 +126,8 @@ def listings():
 @app.route('/analysis',methods = ["GET","POST"])
 def analysis():
 
-    path = ".\static"
+    # path = "./static/"
+    path = "./HouseApp/static/"
     png_files = [f for f in os.listdir(path) if f.endswith('.png')]
     png_files = sorted(png_files, key=lambda fname: int(fname.split('.')[0]))
     # display selected option based on input
@@ -206,7 +207,6 @@ def controller():
                 maxPrice = request.args['maxPrice']
                 minArea = request.args['minArea']
                 maxArea = request.args['maxArea']
-                print(location)
                 if not setup:  # if session variables not setup, set the variables as empty
                     session['locOption'] = " "
                     session['roomOption'] = " "
