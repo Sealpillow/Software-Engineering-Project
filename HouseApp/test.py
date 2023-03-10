@@ -1,11 +1,13 @@
 import numpy as np
 from flask import Flask, redirect, url_for, render_template,request,session,flash
-import ClickProperty,DirectHome
+import ClickProperty,DirectHome,sendEmail
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 import json
 import os
 import plot
+import random
+import string
 app = Flask(__name__)
 # for sessions
 app.secret_key = "dfhfyufnfhhfbf"
@@ -126,8 +128,7 @@ def listings():
 @app.route('/analysis',methods = ["GET","POST"])
 def analysis():
 
-    # path = "./static/"
-    path = "./HouseApp/static/"
+    path = ".\static"
     png_files = [f for f in os.listdir(path) if f.endswith('.png')]
     png_files = sorted(png_files, key=lambda fname: int(fname.split('.')[0]))
     # display selected option based on input
@@ -165,6 +166,9 @@ def analysis():
 def register():
     if "registered" in session:
         flash("Account Already Registered")
+    elif "newlyRegistered" in session:
+        flash("Account created")
+
     return render_template("register.html",session=session)
 
 
@@ -189,17 +193,34 @@ def deleteAccount():
     return render_template("deleteAccount.html")
 
 
-
+@app.route('/reset',methods = ["GET","POST"])
+def reset():
+    if "invalidAcc" in session:
+        flash("Invalid Account")
+    elif "wrongAnswer" in session:
+        flash("Wrong Answer")
+    elif "resetted" in session:
+        flash("Password Resetted")
+    return render_template("resetPassword.html",session=session)
 
 @app.route('/controller',methods = ["GET","POST"])
 def controller():
     global setup, result
     if request.method == "GET":
-        if "registered" in session:
+        if "registered" in session:  # it removes existing session of "registered", will be set again if requirement met again
             session.pop("registered", None)
+        if "validAcc" in session:  # it removes existing session of "validAcc", will be set again if requirement met again
+            session.pop("validAcc", None)
+        if "invalidAcc" in session:  # it removes existing session of "invalidAcc", will be set again if requirement met again
+            session.pop("invalidAcc", None)
+        if "resetted" in session:  # it removes existing session of "resetted", will be set again if requirement met again
+            session.pop("resetted", None)
+        if "newlyRegistered" in session:  # it removes existing session of "newlyRegistered", will be set again if requirement met again
+            session.pop("newlyRegistered", None)
         if request.args['request'] == "home":
             session['prevUrl'] = "home"
             return redirect(url_for("home"))
+
         elif request.args['request'] == "listings":
             listings = {}
             if len(request.args.getlist('locOption')) != 0:  # user new input options
@@ -332,6 +353,7 @@ def controller():
                 return redirect(url_for('register'))
             else:
                 print("added")
+                session["newlyRegistered"] = " "
                 newUser = users(email,password,question,answer)
                 db.session.add(newUser)
                 db.session.commit()
@@ -347,12 +369,13 @@ def controller():
                 session["password"] = found_user.password
                 session["maskPassword"] = "*"*len(session["password"])
                 session.permanent = True
-                if session['prevUrl'] == "listings":
+                if 'prevUrl' not in session:
+                    return redirect(url_for('home'))
+                elif session['prevUrl'] == "listings":
                     return redirect(url_for("controller",request="listings"))
                 elif session['prevUrl'] == "analysis":
                     return redirect(url_for("controller",request="analysis"))
-                else:
-                    return redirect(url_for('home'))
+
             else:
                 print("not found")
             return redirect(url_for('home'))
@@ -405,6 +428,39 @@ def controller():
                 for index, x in enumerate(found_user.wishlist):  # this current user wishlist
                     listings[str(index)] = [x.link, x.listImg, x.area, x.room, x.bath, x.cost, x.address, x.companyImg]
                 return redirect(url_for("wishlist",listings=listings))
+        elif request.args['request'] == "checkAcc":
+            email = request.args['email']
+            found_user = users.query.filter_by(email=email).first()
+            if found_user:
+                session["validAcc"] = " "
+                session["question"] = found_user.question
+                session["answer"] = found_user.answer
+                session["temp"] = found_user.email
+                print(session["question"])
+                print(session["answer"])
+            else:
+                session["invalidAcc"] = " "
+            return redirect(url_for("reset"))
+        elif request.args['request'] == "resetPassword":
+            answer = request.args["answer"]
+            email = session["temp"]
+            if answer == session["answer"]:
+                found_user = users.query.filter_by(email=email).first()  # in the user database->find->get filtered by() the first element
+                print("password resetted")
+                session["resetted"] = " "
+                session.pop("validAcc",None)
+                # define the possible characters for the password
+                characters = string.ascii_letters + string.digits + string.punctuation
+                # define the length of the password
+                length = 12
+                # generate the password
+                newPassword = ''.join(random.choice(characters) for i in range(length))
+                found_user.password = newPassword  # what to set as random password
+                db.session.commit()
+                sendEmail.main(email,newPassword)
+            else:
+                session["wrongAnswer"] = " "
+            return redirect(url_for("reset"))
 
 
 if __name__ == "__main__":
