@@ -229,9 +229,11 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
           {% endif %}
       </form>
 
+      {% if 'email' not in session %}
       <form action="/controller" method ="get">
-        <a href="{{url_for('reset')}}" class="forgetPass">Forget Password?</a>
+          <a href="{{url_for('reset')}}" class="forgetPass">Forget Password?</a>
       </form>
+      {% endif %}
        <!--Float links to the right. Hide them on small screens -->
     </div>
 </div>
