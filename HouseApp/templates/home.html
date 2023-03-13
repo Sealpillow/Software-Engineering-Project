@@ -213,7 +213,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
 <!-- Navigation Bar -->
 <div class="w3-top">
     <div class="w3-bar w3-wide w3-padding w3-card w3-container" style = "background-color:#00aff0">
-      <form action="/controller" method ="get">
+      <form action="/redirectController" method ="get">
          <a href = "{{ url_for('home') }}"> <img src= "../static/images/logo.png" alt = "text" style="min-width: 150px" height="70" ></a>
           {% if 'email' in session %}
           <div class="acc-container"  >
@@ -230,9 +230,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
       </form>
 
       {% if 'email' not in session %}
-      <form action="/controller" method ="get">
-          <a href="{{url_for('reset')}}" class="forgetPass">Forget Password?</a>
-      </form>
+      <a href="{{url_for('reset')}}" class="forgetPass">Forget Password?</a>
       {% endif %}
        <!--Float links to the right. Hide them on small screens -->
     </div>
@@ -242,7 +240,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
     <img class="w3-image" src="../static/images/bg.jpg" style="max-height: 100vh;display: block;margin: auto;">
     <div class="w3-display-middle w3-padding w3-col l5 m">
 
-    <form action="/controller"  method ="get">
+    <form action="/redirectController"  method ="get">
     <div class="w3-container w3-center" style="text-align:center; padding-top:10px; color:white; background-color:#00aff0" >
         <h2><i class="fas fa-home w3-margin-right" ></i>HDB Search</h2>
     </div>

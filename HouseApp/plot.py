@@ -11,34 +11,30 @@ matplotlib.use('agg')  # used for UserWarning: Starting a Matplotlib GUI outside
 #  https://www.dataquest.io/blog/python-api-tutorial/
 
 
-def jPrint(obj):
-    # create a formatted string of the Python JSON object
-    # json.dumps() — Takes in a Python object, and converts (dumps) it to a string.
-    text = json.dumps(obj, sort_keys=True, indent=4)
-    print(text)
-
-
 def generateAnnotation(xAxis,yAxis):
+    """
+    This function annotate str values to its plot
+
+    Args:
+        xAxis (list): List of string containing x-axis values
+        yAxis (list): List of string/int containing y-axis values
+    """
     for i in range(len(xAxis)):
         plt.annotate(str(yAxis[i]),xy=(xAxis[i],yAxis[i]))
 
 
-def findMinMax(dataList):
-    # https://stackoverflow.com/questions/47963548/how-to-append-a-row-to-another-dataframe
-    minmax = pd.DataFrame()
-    minmax = minmax.append(dataList.iloc[0])
-    minmax = minmax.append(dataList.iloc[0])
-    for index, data in dataList.iterrows():
-        price = float(data["resale_price"])
-        if price < float(minmax.iloc[0]["resale_price"]):
-            minmax.iloc[0] = data
-        if price > float(minmax.iloc[1]["resale_price"]):
-            minmax.iloc[1] = data
-    minmax = minmax.reset_index(drop=True)
-    return minmax
+def generateGraph(filteredFrame,town,room,monthList,strGraph):  # option 0: generate average resale price, option 1:Overall generate average resale price
+    """
+    This function generate Min/Average/Max ResalePricePerMonth graph based on filtered data frame
 
+    Args:
+        filteredFrame (list): List of string containing x-axis values
+        town (str): Str of town
+        room (str): Str of room
+        monthList (list): list of the month
+        strGraph (str): png name
 
-def generateGraph(filteredFrame,town,room,option,monthList,strGraph):  # option 0: generate average resale price, option 1:Overall generate average resale price
+    """
     selectedTownInfoPerMonth = []
     for i in monthList:  # xAxis
         selectedTownInfoPerMonth.append(filteredFrame[filteredFrame["month"] == i])
@@ -75,18 +71,13 @@ def generateGraph(filteredFrame,town,room,option,monthList,strGraph):  # option 
     plt.ticklabel_format(useOffset=False, axis='y')
     plt.plot(xMonth, selectedTownAverageResalePricePerMonth)
     generateAnnotation(xMonth, selectedTownAverageResalePricePerMonth)
-    if option == 1:  # option 1
-        plt.xlabel('Month')
-        plt.ylabel('Resale Price')
-        plt.plot(xMonth, minResalePricePerMonth)
-        generateAnnotation(xMonth, minResalePricePerMonth)
-        plt.plot(xMonth, maxResalePricePerMonth)
-        generateAnnotation(xMonth, maxResalePricePerMonth)
-        #print("Overall Average Resale Price Graph Generated")
-    else:
-        plt.xlabel('Month')
-        plt.ylabel('Average Resale Price')
-        #print("Average Resale Price Graph Generated")
+    plt.xlabel('Month')
+    plt.ylabel('Resale Price')
+    plt.plot(xMonth, minResalePricePerMonth)
+    generateAnnotation(xMonth, minResalePricePerMonth)
+    plt.plot(xMonth, maxResalePricePerMonth)
+    generateAnnotation(xMonth, maxResalePricePerMonth)
+    #print("Overall Average Resale Price Graph Generated")
     plt.title(town + "(" + room + ")")
     path = Path(strGraph)
     if path.is_file():  # check file exist
@@ -171,9 +162,16 @@ def generateCount(filterMonth, townList, strGraph):
 
 
 def main(inputLocationsList,inputRoomsList):
+    """
+    This is the main function of the script.
 
-    path = "./HouseApp/static/" # if visual studio
-    # path = "static/"  # if pycharm
+    It calls function1() and function2() to do something useful.
+
+    Returns:
+        str: A message indicating that the script has completed.
+    """
+    # path = "./HouseApp/static/" # if visual studio
+    path = "static/"  # if pycharm
     for filename in os.listdir(path):
         if filename.endswith('.png'):
             os.remove(os.path.join(path, filename))
@@ -215,10 +213,9 @@ def main(inputLocationsList,inputRoomsList):
         for inputRoom in inputRoomsList:  # user input
             filterRoom = filterTown[filterTown["flat_type"] == inputRoom.upper()]
             # Specific data filter: town: BEDOK, room = 5 ROOM   -> if room not stated, assumed to be all
-            # generateGraph(filterRoom, inputTown, inputRoom, 0, monthList,str(count)+".png")  # find the Average Resale Price based on filter and the past 12 months
-            generateGraph(filterRoom, inputTown, inputRoom, 1, monthList,path+str(count)+".png")  # find the Overall Resale Price based on filter and the past 12 months
+            generateGraph(filterRoom, inputTown, inputRoom, monthList,path+str(count)+".png")  # find the Overall Resale Price based on filter and the past 12 months
             count += 1
-            # print(findMinMax(filterRoom)) #
+
 
 if __name__ == "__main__":
     main()
