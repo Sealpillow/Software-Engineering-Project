@@ -150,6 +150,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
           font-size: 17px;
           border: none;
           cursor: pointer;
+          height: 37.5px;
         }
         #regButton {
           padding: 6px 10px;
@@ -205,6 +206,14 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
           vertical-align: bottom;
         }
 
+        input[type=email] {
+          height: 37.5px;
+        }
+
+        input[type=password] {
+          height: 37.5px;
+        }
+
 
 </style>
 </head>
@@ -221,8 +230,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
           </div>
           {% else %}
           <div class="login-container">
-              <input type="text" placeholder="Email" name="email" required>
-              <input type="text" placeholder="Password" name="password" required>
+              <input type="email" placeholder="Email" name="email" required>
+              <input type="password" placeholder="Password" name="password" required>
               <button type="submit" id = "loginButton" name="request" value="login">Login</button>
               <button type="submit" id = "regButton" name="request" value="register" formnovalidate>Register</button>
           </div>
@@ -237,7 +246,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
 </div>
 <!-- Header -->
 <div>
-    <img class="w3-image" src="../static/images/bg.jpg" style="max-height: 100vh;display: block;margin: auto;">
+    <img class="w3-image" src="../static/images/bg.jpg" style="width:100vw; height:100vh; max-height: 100vh;display: block;margin: auto;">
     <div class="w3-display-middle w3-padding w3-col l5 m">
 
     <form action="/redirectController"  method ="get">

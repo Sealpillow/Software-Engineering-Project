@@ -170,8 +170,8 @@ def main(inputLocationsList,inputRoomsList):
     Returns:
         str: A message indicating that the script has completed.
     """
-    # path = "./HouseApp/static/" # if visual studio
-    path = "static/"  # if pycharm
+    path = "./HouseApp/static/" # if visual studio
+    # path = "static/"  # if pycharm
     for filename in os.listdir(path):
         if filename.endswith('.png'):
             os.remove(os.path.join(path, filename))

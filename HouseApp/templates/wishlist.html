@@ -78,7 +78,10 @@ body{font-family: Arial}
     {% with messages =  get_flashed_messages() %}
     {% if messages %}  <!--check any message to display-->
         {% for msg in messages %}
-            <p> {{msg}} </p>
+            
+          <div style="margin-top: 20vh; margin-left: 10vw; font-size: calc(15px + 0.5vw + 0.5vh);">
+            <p>{{msg}}</p>
+          </div> 
         {% endfor %}
     {% endif %}
     {% endwith %}
