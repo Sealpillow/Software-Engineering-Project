@@ -164,12 +164,18 @@ h4 {
     <button class="open-button" onclick="openForm()" style="height: 5vh;">Change Password</button>
   </div>
 </div>
-
+{% with messages =  get_flashed_messages() %}
+{% if messages %}  <!--check any message to display-->
+    {% for msg in messages %}
+        <p> {{msg}} </p>
+    {% endfor %}
+{% endif %}
+{% endwith %}
 <div class="form-popup" id="myForm">
   <form action="/accountController" method = "get" class="form-container">
     <h1>Change Password</h1>
     <label><b>Enter Old Password</b></label>
-    <input type="text" placeholder="Enter Old Password" name="password" required>
+    <input type="text" placeholder="Enter Old Password" name="oldPassword" required>
     <label ><b>Enter New Password</b></label>
     <input type="password" placeholder="Enter New Password" name="newPassword" required>
     <label ><b>Re-enter New Password</b></label>

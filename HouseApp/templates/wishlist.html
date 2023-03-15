@@ -75,6 +75,13 @@ body{font-family: Arial}
 
 <!-- <div class="column right" style="max-width:1300px; margin-left:1%;margin-top:220px;"> -->
 <div class="column right" style="max-width:70%; margin-left:1%;margin-top:30vh;">
+    {% with messages =  get_flashed_messages() %}
+    {% if messages %}  <!--check any message to display-->
+        {% for msg in messages %}
+            <p> {{msg}} </p>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
     <!-- each row-->
     {% for flat in listings %} <!-- each listing-->
         <div class="w3-container w3-white  w3-margin" style = "width:45%;">
@@ -85,11 +92,13 @@ body{font-family: Arial}
             <a href = {{ flat[0] }}>
                 <button class="w3-button w3-block w3-black w3-margin-bottom w3-large" style="width:100%">View Listing</button>
             </a>
-            <form action="/controller" method = "get">
+            <form action="/accountController" method = "get">
                 <button class="w3-button w3-block w3-black w3-margin-bottom w3-large" style="width:100%" name="request" value="DeleteFromWishList{{ flat[0] }}">Delete Listing</button>
             </form>
         </div>
     {% endfor %}
+
+
 </div>
 
 </body>

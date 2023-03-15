@@ -236,9 +236,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
 <body class ="w3-light-grey">
 
 <!-- Navigation Bar -->
-<div class="w3-top" style="z-index: 2;">
-    <div class="w3-bar w3-wide w3-padding w3-card w3-container" style = "background-color:#00aff0;">
-      <form action="/controller" method ="get">
+<div class="w3-top">
+    <div class="w3-bar w3-wide w3-padding w3-card w3-container" style = "background-color:#00aff0">
+      <form action="/redirectController" method ="get">
          <a href = "{{ url_for('home') }}"> <img src= "../static/images/logo.png" alt = "text" style="min-width: 150px" height="70" ></a>
          {% if 'email' in session %}
           <div class="acc-container">
@@ -246,10 +246,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
           </div>
           {% else %}
           <div class="login-container">
-              <!-- <input type="text" placeholder="Email" name="email" required>
-              <input type="text" placeholder="Password" name="password" required> -->
-              <input type="email" placeholder="Email" name="email" required>
-              <input type="password" placeholder="Password" name="password" required>
+              <input type="text" placeholder="Email" name="email" required>
+              <input type="text" placeholder="Password" name="password" required>
               <button type="submit" id = "loginButton" name="request" value="login">Login</button>
               <button type="submit" id = "regButton" name="request" value="register" formnovalidate>Register</button>
           </div>
@@ -260,7 +258,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
 </div>
 
   <!-- https://blog.hubspot.com/website/html-dropdown-->
-  <form action="/controller" method ="get">
+  <form action="/redirectController" method ="get">
       <!-- https://dev.to/ara225/how-to-create-a-custom-multi-select-dropdown-2mnb -->
       <div class="col-12 col-md-12 container" style ="width:fit-content">
           <div class="row col-22">
@@ -384,7 +382,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
         <a href = {{ flat[0] }} >
           <button class="w3-button w3-block w3-black w3-margin-bottom w3-large" >View Listing</button>
         </a>
-        <form action = "/controller" method = "get">
+        <form action = "/accountController" method = "get">
           {% if 'email' in session %}
             <button class="w3-button w3-block w3-black w3-large" onclick="alertFunction()" name="request" value="AddToWishList*{{ flat[0] }}*{{ flat[1] }}*{{ flat[2] }}*{{ flat[3] }}*{{ flat[4] }}*{{ flat[5] }}*{{ flat[6] }}*{{ flat[7] }}">Add to WishList</button>
           {% endif %}
