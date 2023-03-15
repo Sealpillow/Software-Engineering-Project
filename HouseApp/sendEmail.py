@@ -3,8 +3,18 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
 
+
 # Your email account credentials
 def main(user_email,newPassword):
+    """
+    This is the main function of the script.
+
+    This function sends an email containing a new password to the user's email using the company's email
+
+    Args:
+        user_email (str): Description of arg1.
+        newPassword (str): Description of arg2.
+    """
     username = "OnlyFlats@hotmail.com"
     password = "iloveNTU2!"
 
