@@ -36,7 +36,7 @@ class User(db.Model):
     It has a many-to-many relationship with Listings class
 
     Attributes:
-        id (int): A unique identifier for the user.
+        _id (int): A unique identifier for the user.
         email (str): The user's email address.
         password (str): The user's password.
         question (str): A security question to ask the user in case they forget their password.
@@ -81,8 +81,7 @@ class Listing(db.Model):
     It has a many-to-many relationship with User class
 
     Attributes:
-        id (int): A unique identifier for the user.
-        link (str): The URL of the listing.
+        link (str): The URL identifier of the listing.
         listImg (str): The URL image of the property.
         area (int): The area of the property in square feet.
         room (int): The number of bedrooms in the property.
@@ -283,7 +282,7 @@ def wishlist():
     """
     if request.method == "GET":
         if "email" in session:
-            if "lisitings" in request.args:
+            if "listings" in request.args:
                 dict = request.args.to_dict("listings")
                 res = dict["listings"].replace("\'", "\"")
                 dictList = json.loads(res)
@@ -309,7 +308,7 @@ def deleteAccount():
     return redirect(url_for("home"))
 
 
-@app.route("/resetPassword", methods=["GET"])
+@app.route("/reset", methods=["GET"])
 def reset():
     """
     This function generate the resetPassword page that allow the user to reset his/her password
@@ -376,7 +375,7 @@ def accountController():
             return deleteFromWishList()
         elif request.args["request"] == "checkAcc":
             checkAcc()
-            return redirect(url_for("resetPassword"))
+            return redirect(url_for("reset"))
         elif request.args["request"] == "resetPassword":
             return resetPassword()
 
@@ -404,13 +403,13 @@ def redirectController():
         elif request.args["request"] == "login":
             return redirect(url_for("accountController", request="login", email=request.args["email"], password=request.args["password"]))
         elif request.args["request"] == "listings":
-            return generateListings(result)
+            return generateListings()
         elif request.args["request"] == "analysis":
             return generateAnalysis()
-        elif request.args["request"] == 'sortAscend':
+        elif request.args["request"] == "sortAscend":
             listings = dict(sorted(result.items(), key=lambda x: int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison            session["prevUrl"] = "listings"
             return redirect(url_for("listings", listings=listings))
-        elif request.args["request"] == 'sortDescend':
+        elif request.args["request"] == "sortDescend":
             listings = dict(sorted(result.items(), key=lambda x: -int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison
             session["prevUrl"] = "listings"
             return redirect(url_for("listings", listings=listings))
@@ -469,12 +468,12 @@ def login():
         # print("exist")
         if found_user.password != password:
             session["passwordError"] = " "
-            prevUrl()
+            return prevUrl()
         session["email"] = found_user.email
         session["password"] = found_user.password
         session["maskPassword"] = "*" * len(session["password"])
         session.permanent = True
-        prevUrl()
+        return prevUrl()
     # print("not found")
     return redirect(url_for("home"))
 
@@ -514,7 +513,12 @@ def checkAcc():
     Returns:
       __main__.User: User's information from the database
     """
-    email = request.args["email"]
+
+    if 'email' in request.args:
+        email = request.args["email"]
+    else:
+        email = session["email"]
+
     found_user = User.query.filter_by(email=email).first()  # in the user database->find->get filtered by() the first element
     if found_user:
         session["validAcc"] = " "
@@ -579,13 +583,13 @@ def resetPassword():
         length = 12
         # generate the password
         newPassword = ''.join(random.choice(characters) for i in range(length))
-        print("password resetted")
+        print("Successfully Resetted")
         found_user.password = newPassword  # what to set as random password
         db.session.commit()
         sendEmail.main(email, newPassword)
     else:
         session["wrongAnswer"] = " "
-    return redirect(url_for("resetPassword"))
+    return redirect(url_for("reset"))
 
 
 def generateWishList():
@@ -603,6 +607,7 @@ def generateWishList():
         listings = {}
         for index, x in enumerate(found_user.wishlist):  # this current user wishlist
             listings[str(index)] = [x.link, x.listImg, x.area, x.room, x.bath, x.cost, x.address, x.companyImg]
+        print(listings)
         return redirect(url_for("wishlist", listings=listings))
     return redirect(url_for("home"))
 
@@ -654,7 +659,7 @@ def deleteAccFromSys():
         return redirect(url_for("deleteAccount"))
     else:
         print("account deleted")
-        found_user.delete()
+        db.session.delete(found_user)
         db.session.commit()
         session.pop("email", None)
         return redirect(url_for("home"))
@@ -725,7 +730,7 @@ def checkSetUp():
         setup = True
 
 
-def generateListings(result):
+def generateListings():
     """
     This function is to delete listing from User's wishlist which is updated in the database
 
@@ -743,7 +748,7 @@ def generateListings(result):
     Returns:
         str: The url to redirected user to listing.html with the current listing result from webscraping
     """
-    global setup
+    global setup, result
     listings = {}
     if len(request.args.getlist("locOption")) != 0:  # user new input options
         location = request.args.getlist("locOption")
