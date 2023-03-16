@@ -201,38 +201,40 @@ def analysis():
         str: The rendered HTML template: analysis.html
     """
     if request.method == "GET":
-        # path = "./HouseApp/static/" # if visual studio
-        path = ".\static"  # if pycharm
-        png_files = [f for f in os.listdir(path) if f.endswith(".png")]
-        png_files = sorted(png_files, key=lambda fname: int(fname.split(".")[0]))
-        # display selected option based on input
-        location = {"AngMoKio": 0, "Bedok": 0, "Bishan": 0, "BukitBatok": 0, "BukitMerah": 0,
-                    "BukitPanjang": 0, "Bukit Timah": 0, "CentralArea": 0, "ChoaChuKang": 0, "Clementi": 0,
-                    "Geylang": 0, "Hougang": 0, "JurongEast": 0, "JurongWest": 0, "KallangWhampoa": 0, "MarineParade": 0,
-                    "PasirRis": 0, "Punggol": 0, "Queenstown": 0, "Sembawang": 0, "Sengkang": 0, "Serangoon": 0, "Tampines": 0,
-                    "ToaPayoh": 0, "Woodlands": 0, "Yishun": 0}
-        flatType = {"Room1": 0, "Room2": 0, "Room3": 0, "Room4": 0, "Room5": 0}
-        bed = {"bed1": 0, "bed2": 0, "bed3": 0, "bed4": 0, "bed5": 0}
-        bath = {"bath1": 0, "bath2": 0, "bath3": 0}
 
-        for selectedLoc in session["locOption"]:
-            selectedLoc = selectedLoc.replace(" ", "")
-            selectedLoc = selectedLoc.replace("/", "")
-            location[selectedLoc] = 1
+        if "location" in request.args:
+            # path = "./HouseApp/static/" # if visual studio
+            path = ".\static"  # if pycharm
+            png_files = [f for f in os.listdir(path) if f.endswith(".png")]
+            png_files = sorted(png_files, key=lambda fname: int(fname.split(".")[0]))
+            # display selected option based on input
+            location = {"AngMoKio": 0, "Bedok": 0, "Bishan": 0, "BukitBatok": 0, "BukitMerah": 0,
+                        "BukitPanjang": 0, "Bukit Timah": 0, "CentralArea": 0, "ChoaChuKang": 0, "Clementi": 0,
+                        "Geylang": 0, "Hougang": 0, "JurongEast": 0, "JurongWest": 0, "KallangWhampoa": 0, "MarineParade": 0,
+                        "PasirRis": 0, "Punggol": 0, "Queenstown": 0, "Sembawang": 0, "Sengkang": 0, "Serangoon": 0, "Tampines": 0,
+                        "ToaPayoh": 0, "Woodlands": 0, "Yishun": 0}
+            flatType = {"Room1": 0, "Room2": 0, "Room3": 0, "Room4": 0, "Room5": 0}
+            bed = {"bed1": 0, "bed2": 0, "bed3": 0, "bed4": 0, "bed5": 0}
+            bath = {"bath1": 0, "bath2": 0, "bath3": 0}
 
-        for selectedRoom in session["roomOption"]:
-            selectedRoom = selectedRoom.replace(" ", "")
-            flatType[selectedRoom[1:] + selectedRoom[0]] = 1
+            for selectedLoc in session["locOption"]:
+                selectedLoc = selectedLoc.replace(" ", "")
+                selectedLoc = selectedLoc.replace("/", "")
+                location[selectedLoc] = 1
 
-        for selectedBed in session["bedOption"]:
-            bed["bed" + selectedBed] = 1
-        for selectedBath in session["bathOption"]:
-            bath["bath" + selectedBath] = 1
-        selectedMinPrice = session["minPrice"]
-        selectedMaxPrice = session["maxPrice"]
-        selectedMinArea = session["minArea"]
-        selectedMaxArea = session["maxArea"]
-        return render_template("analysis.html", png_files=png_files, session=session, location=location, flatType=flatType, bed=bed, bath=bath, selectedMinPrice=selectedMinPrice, selectedMaxPrice=selectedMaxPrice, selectedMinArea=selectedMinArea, selectedMaxArea=selectedMaxArea)
+            for selectedRoom in session["roomOption"]:
+                selectedRoom = selectedRoom.replace(" ", "")
+                flatType[selectedRoom[1:] + selectedRoom[0]] = 1
+
+            for selectedBed in session["bedOption"]:
+                bed["bed" + selectedBed] = 1
+            for selectedBath in session["bathOption"]:
+                bath["bath" + selectedBath] = 1
+            selectedMinPrice = session["minPrice"]
+            selectedMaxPrice = session["maxPrice"]
+            selectedMinArea = session["minArea"]
+            selectedMaxArea = session["maxArea"]
+            return render_template("analysis.html", png_files=png_files, session=session, location=location, flatType=flatType, bed=bed, bath=bath, selectedMinPrice=selectedMinPrice, selectedMaxPrice=selectedMaxPrice, selectedMinArea=selectedMinArea, selectedMaxArea=selectedMaxArea)
     return redirect(url_for("home"))
 
 
@@ -607,7 +609,6 @@ def generateWishList():
         listings = {}
         for index, x in enumerate(found_user.wishlist):  # this current user wishlist
             listings[str(index)] = [x.link, x.listImg, x.area, x.room, x.bath, x.cost, x.address, x.companyImg]
-        print(listings)
         return redirect(url_for("wishlist", listings=listings))
     return redirect(url_for("home"))
 
@@ -825,7 +826,7 @@ def generateAnalysis():
             # generate new analysis
             plot.main(location, flatType)
     session["prevUrl"] = "analysis"
-    return redirect(url_for("analysis"))
+    return redirect(url_for("analysis", location=location))  # location as request.args as a dummy to prevent illegal access
 
 
 if __name__ == "__main__":
