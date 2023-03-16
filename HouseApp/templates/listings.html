@@ -228,11 +228,11 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
             overflow-x: hidden;
         }
         input[type=email] {
-          height: 37.5px;
+          height: 39px;
         }
 
         input[type=password] {
-          height: 37.5px;
+          height: 39px;
         }
 </style>
 <head>
@@ -246,7 +246,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
 <div class="w3-top">
     <div class="w3-bar w3-wide w3-padding w3-card w3-container" style = "background-color:#00aff0">
       <form action="/redirectController" method ="get">
-         <a href = "{{ url_for('home') }}"> <img src= "../static/images/logo.png" alt = "text" style="min-width: 150px" height="70" ></a>
+         <a href = "{{ url_for('home') }}"> <img src= "../static/images/logo.png" alt = "text" style="min-width: 150px;" height="70" ></a>
          {% if 'email' in session %}
           <div class="acc-container">
             <a href= "{{ url_for('accountDetail')}}"  style = "color:white;">View Account</a>
@@ -329,7 +329,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
                   </div>
               </div>
               <div>
-                  <button class="w3-button" type="submit" name = "request" value = "listings" style = "border-radius: 48px; margin-top:100px; margin-left:10px; background-color:#A9A9A9"><i class="fa fa-search w3-margin-right"></i>Search availability</button>
+                  <button class="w3-button" type="submit" name = "request" value = "listings" style = "border-radius: 48px; margin-top:100px; margin-left:10px; background-color:#A9A9A9"><i class="fa fa-search w3-margin-right"></i>Search Listings</button>
                   <button class="w3-button" type="submit" name = "request" value = "analysis" style = "border-radius: 48px; margin-top:100px; margin-left:10px; background-color:#A9A9A9"><i class="fa fa-search w3-margin-right"></i>Market Analysis</button>
                   <button class="w3-button" type="submit" name = "request" value = "sortAscend" style = "border-radius: 48px; margin-top:100px; margin-left:10px; background-color:#A9A9A9"><i class="fa fa-search w3-margin-right"></i>Sort Ascending</button>
                   <button class="w3-button" type="submit" name = "request" value = "sortDescend" style = "border-radius: 48px; margin-top:100px; margin-left:10px; background-color:#A9A9A9"><i class="fa fa-search w3-margin-right"></i>Sort Descending</button>
@@ -383,7 +383,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: Arial, Helvetica, sans-serif}
     {% for flat in listings %} <!-- each listing-->
       <div class="column w3-white w3-margin-bottom" style = "margin-left:5px;margin-right:5px">
         <img src= {{ flat[1] }} style = "width:100%" height="400">
-        <h6 style="width:100%">{{ flat[6] }}</h6>
+        <h6 style="width:100%;padding-top:10px">{{ flat[6] }}</h6>
         <h6 style="width:100%">{{ flat[5] }}</h6>
         <p style = "font-size: 16px; margin-right:20px" ><i class="fas fa-arrows-alt-h"></i> {{ flat[2] }} <i class="fa fa-bed"></i> {{ flat[3] }} <i class="fa fa-bath"></i> {{ flat[4] }} <img src= {{ flat[7] }} alt="Norway"  width="110" height="40"></p>
         <a href = {{ flat[0] }} >
