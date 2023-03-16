@@ -5,7 +5,7 @@ from email.utils import formataddr
 
 
 # Your email account credentials
-def main(user_email,newPassword):
+def main(user_email, newPassword):
     """
     This is the main function of the script.
 
@@ -44,6 +44,7 @@ def main(user_email,newPassword):
         smtp.sendmail(sender_email, recipient_email, msg.as_string())
         print("sent")
         smtp.quit()
+
 
 if __name__ == "__main__":
     main()

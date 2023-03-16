@@ -1,4 +1,20 @@
 def main(inputLocation, inputFlatType, inputBed, inputBath, inputMinPrice, inputMaxPrice, inputMinArea, inputMaxArea,pageNum):
+    """
+    This function is to generate url for web scrapping based on inputs
+
+    Arg
+        location (list): contain list of location option
+        flatType (list): contain list of room option
+        bed (list): contain list of bed option
+        bath (list): contain list of bath option
+        minPrice (str): contain min price input
+        maxPrice (str): contain max price input
+        minArea (str): contain min area input
+        maxArea (str): contain max area input
+
+    Returns:
+        str: The url for web scrapping based on inputs
+    """
     # https://www.directhome.com.sg/listings?utf8=%E2%9C%93&q[listing_type_eq]=1&q[property_type_eq]=1&q[property_subtype_id_in][]=a245ff94-fbb4-4a80-bfe6-77f6363492f0&q[property_subtype_id_in][]=5a097d03-7a7f-4739-a485-3d1bb0ef77ca&q[name_or_description_or_address_cont]=choa+chu+kang&q[estate_id_in][]=56e7f452-cb9d-4d3d-b7c8-9f4295e91f46&q[estate_id_in][]=09c4c3bd-1f8f-4544-b598-75dc527e62c0&q[price_gteq]=0&q[price_lteq]=12345567&q[bedrooms_in][]=2&q[bedrooms_in][]=3&q[bathrooms_in][]=2&q[bathrooms_in][]=3&q[psf_gteq]=&q[psf_lteq]=&q[land_area_gteq]=&q[land_area_lteq]=&q[floor_area_gteq]=500.0&q[floor_area_lteq]=&commit=Search&page=1
     # https://www.directhome.com.sg/listings?utf8=%E2%9C%93&q[listing_type_eq]=1&q[property_type_eq]=1&q[" + f + "name_or_description_or_address_cont]=&q[" + e + minPrice + maxPrice + numBed + numBath +"psf_gteq]=&q[psf_lteq]=&q[land_area_gteq]=&q[land_area_lteq]=&q[" +minfloor +maxfloor
 
