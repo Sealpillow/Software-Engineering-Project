@@ -21,7 +21,7 @@ def generateAnnotation(xAxis, yAxis):
         yAxis (list): List of string/int containing y-axis values
     """
     for i in range(len(xAxis)):
-        plt.annotate(str(yAxis[i]), xy=(xAxis[i], yAxis[i]))
+        plt.annotate(str(yAxis[i]), xy=(xAxis[i], yAxis[i]), fontsize=15)
 
 
 def generateGraph(filteredFrame, town, room, monthList, strGraph):  # option 0: generate average resale price, option 1:Overall generate average resale price
