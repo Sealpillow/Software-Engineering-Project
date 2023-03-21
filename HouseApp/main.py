@@ -83,19 +83,19 @@ class Listing(db.Model):
     Attributes:
         link (str): The URL identifier of the listing.
         listImg (str): The URL image of the property.
-        area (int): The area of the property in square feet.
-        room (int): The number of bedrooms in the property.
-        bath (int): The number of bathrooms in the property.
-        cost (int): The cost of the property in SG dollars.
+        area (str): The area of the property in square feet.
+        room (str): The number of bedrooms in the property.
+        bath (str): The number of bathrooms in the property.
+        cost (str): The cost of the property in SG dollars.
         address (str): The street address of the property.
         companyImg (str): The URL of the image for the company that is selling the property.
     """
     link = db.Column(db.String(100), primary_key=True)  # will be assumed as attributes
     listImg = db.Column(db.String(100))
-    area = db.Column(db.Integer)
-    room = db.Column(db.Integer)
-    bath = db.Column(db.Integer)
-    cost = db.Column(db.Integer)
+    area = db.Column(db.String(100))
+    room = db.Column(db.String(100))
+    bath = db.Column(db.String(100))
+    cost = db.Column(db.String(100))
     address = db.Column(db.String(100))
     companyImg = db.Column(db.String(100))
 
@@ -108,10 +108,10 @@ class Listing(db.Model):
         Args:
             link (str): The URL of the listing.
             listImg (str): The URL image of the property.
-            area (int): The area of the property in square feet.
-            room (int): The number of bedrooms in the property.
-            bath (int): The number of bathrooms in the property.
-            cost (int): The cost of the property in SG dollars.
+            area (str): The area of the property in square feet.
+            room (str): The number of bedrooms in the property.
+            bath (str): The number of bathrooms in the property.
+            cost (str): The cost of the property in SG dollars.
             address (str): The street address of the property.
             companyImg (str): The URL of the image for the company that is selling the property.
         """
@@ -133,6 +133,7 @@ def home():
     Returns:
         str: The rendered HTML template: home.html
     """
+    session["prevUrl"] = "home"
     return render_template("home.html", session=session)
 
 
@@ -396,8 +397,6 @@ def redirectController():
             return redirectHome()
         elif request.args["request"] == "register":
             return redirectRegister()
-        elif request.args["request"] == "login":
-            return redirect(url_for("accountController", request="login", email=request.args["email"], password=request.args["password"]))
         elif request.args["request"] == "listings":
             return generateListings()
         elif request.args["request"] == "analysis":
@@ -483,6 +482,7 @@ def login():
     # print("not found")
     return redirect(url_for("home"))
 
+
 def logout():
     session.pop("email", None)
     return redirect(url_for("home"))
@@ -522,6 +522,7 @@ def prevUrl():  # goes back to where user click login
     Returns:
       str: The url to redirected user back to previous url
     """
+    print(session["prevUrl"])
     if 'prevUrl' not in session or session["prevUrl"] == "home":
         return redirect(url_for("home"))
     elif session["prevUrl"] == "listings":
@@ -761,7 +762,6 @@ def checkSetUp():
         session["maxPrice"] = " "
         session["minArea"] = " "
         session["maxArea"] = " "
-        session["prevUrl"] = " "
         setup = True
 
 
