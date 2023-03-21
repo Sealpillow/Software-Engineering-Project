@@ -92,10 +92,10 @@ class Listing(db.Model):
     """
     link = db.Column(db.String(100), primary_key=True)  # will be assumed as attributes
     listImg = db.Column(db.String(100))
-    area = db.Column(db.String(100))
-    room = db.Column(db.String(100))
-    bath = db.Column(db.String(100))
-    cost = db.Column(db.String(100))
+    area = db.Column(db.Integer)
+    room = db.Column(db.Integer)
+    bath = db.Column(db.Integer)
+    cost = db.Column(db.Integer)
     address = db.Column(db.String(100))
     companyImg = db.Column(db.String(100))
 
@@ -328,6 +328,8 @@ def reset():
     return render_template("resetPassword.html", session=session)
 
 
+
+
 @app.route("/accountController", methods=["GET"])
 def accountController():
     """
@@ -343,31 +345,24 @@ def accountController():
     if request.method == "GET":
         resetStatus()
         if request.args["request"] == "home":
-            session["prevUrl"] = "home"
-            return redirect(url_for("home"))
+            return redirectHome()
         elif request.args["request"] == "accountDetail":
-            session["prevUrl"] = "accountDetail"
-            return redirect(url_for("accountDetail"))
+            return redirectAccountDetail()
         elif request.args["request"] == "wishlist":
-            session["prevUrl"] = "wishlist"
-            return generateWishList()
+            return redirectWishlist()
         elif request.args["request"] == "deleteAccount":
-            session["prevUrl"] = "deleteAccount"
-            return redirect(url_for("deleteAccount"))
+            return redirectDeleteAccount()
         elif request.args["request"] == "deleteAccFromSys":
             return deleteAccFromSys()
         elif request.args["request"] == "register":
-            session["prevUrl"] = "register"
-            return redirect(url_for("register"))
+            return redirectRegister()
         elif request.args["request"] == "registerUser":
             return registerUser()
         elif request.args["request"] == "login":
             return login()
         elif request.args["request"] == "logout":
-            session.pop("email", None)
-            return redirect(url_for("home"))
+            return logout()
         elif request.args["request"] == "changePassword":
-            session["prevUrl"] = "accountDetail"
             return changePassword()
         # AddToWishList is added in value to identify request
         elif "AddToWishList" in request.args["request"]:  # /controller?request=AddToWishList*link
@@ -398,10 +393,9 @@ def redirectController():
         resetStatus()
         checkSetUp()
         if request.args["request"] == "home":
-            session["prevUrl"] = "home"
-            return redirect(url_for("home"))
+            return redirectHome()
         elif request.args["request"] == "register":
-            return redirect(url_for("register"))
+            return redirectRegister()
         elif request.args["request"] == "login":
             return redirect(url_for("accountController", request="login", email=request.args["email"], password=request.args["password"]))
         elif request.args["request"] == "listings":
@@ -409,12 +403,22 @@ def redirectController():
         elif request.args["request"] == "analysis":
             return generateAnalysis()
         elif request.args["request"] == "sortAscend":
-            listings = dict(sorted(result.items(), key=lambda x: int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison            session["prevUrl"] = "listings"
-            return redirect(url_for("listings", listings=listings))
+            return sortAscend()
         elif request.args["request"] == "sortDescend":
-            listings = dict(sorted(result.items(), key=lambda x: -int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison
-            session["prevUrl"] = "listings"
-            return redirect(url_for("listings", listings=listings))
+            return sortDescend()
+
+
+def sortAscend():
+    global result
+    listings = dict(sorted(result.items(), key=lambda x: int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison            session["prevUrl"] = "listings"
+    return redirect(url_for("listings", listings=listings))
+
+
+def sortDescend():
+    global result
+    listings = dict(sorted(result.items(), key=lambda x: -int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison
+    session["prevUrl"] = "listings"
+    return redirect(url_for("listings", listings=listings))
 
 
 def registerUser():
@@ -478,6 +482,35 @@ def login():
         return prevUrl()
     # print("not found")
     return redirect(url_for("home"))
+
+def logout():
+    session.pop("email", None)
+    return redirect(url_for("home"))
+
+
+def redirectHome():
+    session["prevUrl"] = "home"
+    return redirect(url_for("home"))
+
+
+def redirectWishlist():
+    session["prevUrl"] = "wishlist"
+    return generateWishList()
+
+
+def redirectAccountDetail():
+    session["prevUrl"] = "accountDetail"
+    return redirect(url_for("accountDetail"))
+
+
+def redirectDeleteAccount():
+    session["prevUrl"] = "deleteAccount"
+    return redirect(url_for("deleteAccount"))
+
+
+def redirectRegister():
+    session["prevUrl"] = "register"
+    return redirect(url_for("register"))
 
 
 def prevUrl():  # goes back to where user click login
@@ -546,6 +579,7 @@ def changePassword():
     Returns:
         str: The url to redirected user back to accountDetail.html
     """
+    session["prevUrl"] = "accountDetail"
     oldPassword = request.args["oldPassword"]
     newPassword = request.args["newPassword"]
     rePassword = request.args["rePassword"]
