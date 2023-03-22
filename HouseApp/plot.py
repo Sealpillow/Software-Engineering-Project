@@ -168,7 +168,7 @@ def generateCount(filterMonth, townList, strGraph):
     else:
         ax = sb.countplot(y="town", data=filterMonth, order=countOrder, orient='h')
         for p in ax.patches:
-            ax.annotate(int(p.get_width()), ((p.get_x() + p.get_width() + 1.2), p.get_y()), xytext=(1, -18), fontsize=9, color='#004d00', textcoords='offset points', horizontalalignment='right')
+            ax.annotate(int(p.get_width()), ((p.get_x() + p.get_width() + 1.2), p.get_y()), xytext=(1, -18), fontsize=15, color='#004d00', textcoords='offset points', horizontalalignment='right')
     path = Path(strGraph)
     if path.is_file():  # check file exist
         os.remove(strGraph)  # remove from directory
@@ -184,6 +184,7 @@ def linearRegression(predictor, response, testsize, strGraph):
     # train_test_split returns 4 values
     # Split the Dataset into Train and Test, with test_size= 0.2 if predictor total 1000, X_train: 800 data pts, X_test: 200 data pts 
     X_train, X_test, y_train, y_test = train_test_split(predictor, response, test_size = testsize)
+
 
     # Linear Regression using Train Data
     linreg = LinearRegression()         # create the linear regression object
@@ -238,7 +239,7 @@ def generateLinearRegression(filteredFrame, option, strGraph):
         strGraph (str): png name
     """
     price = pd.DataFrame(filteredFrame['resale_price'].astype(float))
-
+    if len(price) == 0: return
     if option == 0:
         area = pd.DataFrame(filteredFrame['floor_area_sqm'].astype(float))
         linearRegression(area, price, 0.2, strGraph)
@@ -274,6 +275,44 @@ def generateLinearRegression(filteredFrame, option, strGraph):
         remainingLeaseFloat.rename({0:"remaining lease (years)"}, axis=1, inplace=True)
         linearRegression(remainingLeaseFloat, price, 0.2, strGraph)
 
+def generateHeatMap(filteredMonth, strGraph):
+    sb.set(rc={'figure.figsize':(11.7,8.27)})
+    price = pd.DataFrame(filteredMonth['resale_price'].astype(float))
+    if len(price) == 0: 
+        return
+    else:
+        area = pd.DataFrame(filteredMonth['floor_area_sqm'].astype(float))
+        remainingLease = pd.DataFrame(filteredMonth['remaining_lease'])
+        remainingLease = filteredMonth["remaining_lease"]
+        remainingLeaseFloat = []
+        for lease in remainingLease:
+            leaseYear = float(lease[0:2])  
+            if lease[9:11] == '':
+                leaseMonth = 0
+            else: 
+                leaseMonth = float(lease[9:11])
+
+            if (leaseMonth == 0):
+                leaseFloat = leaseYear
+            else:
+                leaseFloat = leaseYear + leaseMonth/12
+            remainingLeaseFloat.append(float(round(leaseFloat, 2)))
+        remainingLeaseFloat = pd.DataFrame(remainingLeaseFloat)
+        remainingLeaseFloat.rename({0:"remaining lease (years)"}, axis=1, inplace=True)
+        remainingLeaseFloat = pd.DataFrame(remainingLeaseFloat["remaining lease (years)"].astype(float))
+        joinedDF = price
+        joinedDF = joinedDF.join(area)
+        joinedDF = joinedDF.join(remainingLeaseFloat)
+        print(joinedDF.info())
+        sb.heatmap(joinedDF.corr(), annot=True, fmt=".2f")
+
+    path = Path(strGraph)
+    if path.is_file():  # check file exist
+        os.remove(strGraph)  # remove from directory
+    plt.savefig(strGraph)
+    plt.close()
+
+        
 
 
 # If you want to read a json file -> json.loads() — Takes a JSON string, and converts (loads) it to a Python object.
@@ -327,7 +366,8 @@ def main(inputLocationsList, inputRoomsList):
     generateBar(filterMonth, 1, townList, path + "1.png")  # find the avg resale price based on filter on that month
     generateBar(filterMonth, 2, townList, path + "2.png")  # find the max resale price based on filter on that month
     generateCount(filterMonth, townList, path + "3.png")  # find the num of resale flats based on filter on that month
-    count = 4
+    generateHeatMap(filterMonth, path + "4.png")
+    count = 5 # change to 5 after above done
     for inputTown in inputLocationsList:  # user input
         filterTown = flatInfoPerTown[inputTown.upper()]
         for inputRoom in inputRoomsList:  # user input
@@ -335,7 +375,6 @@ def main(inputLocationsList, inputRoomsList):
             # Specific data filter: town: BEDOK, room = 5 ROOM   -> if room not stated, assumed to be all
             generateGraph(filterRoom, inputTown, inputRoom, monthList, path + str(count) + ".png")  # find the Overall Resale Price based on filter and the past 12 months
             count += 1
-            generateLinearRegression(filterRoom, 0, "5.png")
 
 if __name__ == "__main__":
     main()
