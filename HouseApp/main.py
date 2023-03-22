@@ -202,12 +202,12 @@ def analysis():
         str: The rendered HTML template: analysis.html
     """
     if request.method == "GET":
-
+        global plotImages
         if "location" in request.args:
             # path = "./HouseApp/static/" # if visual studio
-            path = ".\static"  # if pycharm
-            png_files = [f for f in os.listdir(path) if f.endswith(".png")]
-            png_files = sorted(png_files, key=lambda fname: int(fname.split(".")[0]))
+            # path = ".\static"  # if pycharm
+            # png_files = [f for f in os.listdir(path) if f.endswith(".png")]
+            # png_files = sorted(png_files, key=lambda fname: int(fname.split(".")[0]))
             # display selected option based on input
             location = {"AngMoKio": 0, "Bedok": 0, "Bishan": 0, "BukitBatok": 0, "BukitMerah": 0,
                         "BukitPanjang": 0, "Bukit Timah": 0, "CentralArea": 0, "ChoaChuKang": 0, "Clementi": 0,
@@ -235,7 +235,8 @@ def analysis():
             selectedMaxPrice = session["maxPrice"]
             selectedMinArea = session["minArea"]
             selectedMaxArea = session["maxArea"]
-            return render_template("analysis.html", png_files=png_files, session=session, location=location, flatType=flatType, bed=bed, bath=bath, selectedMinPrice=selectedMinPrice, selectedMaxPrice=selectedMaxPrice, selectedMinArea=selectedMinArea, selectedMaxArea=selectedMaxArea)
+
+            return render_template("analysis.html", plotImages=plotImages, session=session, location=location, flatType=flatType, bed=bed, bath=bath, selectedMinPrice=selectedMinPrice, selectedMaxPrice=selectedMaxPrice, selectedMinArea=selectedMinArea, selectedMaxArea=selectedMaxArea)
     return redirect(url_for("home"))
 
 
@@ -522,7 +523,6 @@ def prevUrl():  # goes back to where user click login
     Returns:
       str: The url to redirected user back to previous url
     """
-    print(session["prevUrl"])
     if 'prevUrl' not in session or session["prevUrl"] == "home":
         return redirect(url_for("home"))
     elif session["prevUrl"] == "listings":
@@ -838,6 +838,7 @@ def generateAnalysis():
     Returns:
         str: The url to redirected user to analysis.html
     """
+    global plotImages
     if len(request.args.getlist("locOption")) != 0:  # user new input options
         location = request.args.getlist("locOption")
         flatType = request.args.getlist("roomOption")
@@ -858,9 +859,9 @@ def generateAnalysis():
             session["minArea"] = minArea
             session["maxArea"] = maxArea
             # generate new analysis
-            plot.main(location, flatType)
+            plotImages = plot.main(location, flatType)
     session["prevUrl"] = "analysis"
-    return redirect(url_for("analysis", location=location))  # location as request.args as a dummy to prevent illegal access
+    return redirect(url_for("analysis", location=location))
 
 
 if __name__ == "__main__":
@@ -868,7 +869,8 @@ if __name__ == "__main__":
 
     print("url: http://localhost:8080/")
     setup = False  # indication of initial setup is done
-    result = {}  # contain current extracted result
+    result = {}  # contain current extracted list result
+    plotImages = {}  # contain current plot result
     with app.app_context():
         db.create_all()  # create database if it doesn't exist
     serve(app, host="0.0.0.0", port=8080)  # http://localhost:8080/
