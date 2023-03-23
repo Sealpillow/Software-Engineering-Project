@@ -3,6 +3,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
+from dotenv import load_dotenv
+load_dotenv()
 
 
 # Your email account credentials
@@ -16,12 +18,11 @@ def main(user_email, newPassword):
         user_email (str): Description of arg1.
         newPassword (str): Description of arg2.
     """
-    username = "OnlyFlats@hotmail.com"
-    password = "iloveNTU2!"
 
     # Sender's name and email address
     sender_name = os.getenv('sender_name')
     sender_email = os.getenv('sender_email')
+    sender_password = os.getenv('sender_password')
 
     # Recipient's email address
     recipient_email = user_email
@@ -39,7 +40,7 @@ def main(user_email, newPassword):
     # Connect to Gmail SMTP server
     with smtplib.SMTP('smtp.office365.com', 587) as smtp:
         smtp.starttls()
-        smtp.login(username, password)
+        smtp.login(sender_email, sender_password)
 
         # Send the email
         smtp.sendmail(sender_email, recipient_email, msg.as_string())

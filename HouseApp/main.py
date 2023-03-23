@@ -627,6 +627,8 @@ def resetPassword():
         found_user.password = newPassword  # what to set as random password
         db.session.commit()
         sendEmail.main(email, newPassword)
+        session["password"] = newPassword
+        session["maskPassword"] = "*" * len(session["password"])
     else:
         session["wrongAnswer"] = " "
     return redirect(url_for("reset"))
