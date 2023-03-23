@@ -168,41 +168,54 @@ def generateCount(filterMonth, townList):
     return html_fig
 
 
-def generateHeatMap(filterMonth):
-    price = pd.DataFrame(filterMonth['resale_price'].astype(float))
-    if len(price) == 0:
-        return
-    else:
-        area = pd.DataFrame(filterMonth['floor_area_sqm'].astype(float))
-        remainingLease = pd.DataFrame(filterMonth['remaining_lease'])
-        remainingLease = filterMonth["remaining_lease"]
-        remainingLeaseFloat = []
-        for lease in remainingLease:
-            leaseYear = float(lease[0:2])
-            if lease[9:11] == '':
-                leaseMonth = 0
-            else:
-                leaseMonth = float(lease[9:11])
+def generateHeatMap(filterMonth,townList):
 
-            if (leaseMonth == 0):
-                leaseFloat = leaseYear
-            else:
-                leaseFloat = leaseYear + leaseMonth/12
-            remainingLeaseFloat.append(float(round(leaseFloat, 2)))
-        remainingLeaseFloat = pd.DataFrame(remainingLeaseFloat)
-        remainingLeaseFloat.rename({0:"remaining lease (years)"}, axis=1, inplace=True)
-        remainingLeaseFloat = pd.DataFrame(remainingLeaseFloat["remaining lease (years)"].astype(float))
-        joinedDF = price
-        joinedDF = joinedDF.join(area)
-        joinedDF = joinedDF.join(remainingLeaseFloat)
-        print(joinedDF.info())
-        fig = px.imshow(joinedDF.corr(), text_auto=True)
 
-        # convert the plot to HTML
-        html_fig = fig.to_html(full_html=False)
-        # modify the CSS style to make it look like an image
-        # html_fig = html_fig.replace("<div class=\"mpld3-figure\">", "<div class=\"mpld3-figure\" style=\"display:inline-block; border:1px solid black; padding:5px; width:400px; height:300px; margin: 0 auto;\">")
-        return html_fig
+    '''
+    remainingLease = pd.DataFrame(filterMonth['remaining_lease'])
+    remainingLease = filterMonth["remaining_lease"]
+    remainingLeaseFloat = []
+    for lease in remainingLease:
+        leaseYear = float(lease[0:2])
+        if lease[9:11] == '':
+            leaseMonth = 0
+        else:
+            leaseMonth = float(lease[9:11])
+
+        if (leaseMonth == 0):
+            leaseFloat = leaseYear
+        else:
+            leaseFloat = leaseYear + leaseMonth/12
+        remainingLeaseFloat.append(float(round(leaseFloat, 2)))
+    remainingLeaseFloat = pd.DataFrame(remainingLeaseFloat)
+    remainingLeaseFloat.rename({0:"remaining lease (years)"}, axis=1, inplace=True)
+    remainingLeaseFloat = pd.DataFrame(remainingLeaseFloat["remaining lease (years)"].astype(float))
+    joinedDF = price
+    joinedDF = joinedDF.join(area)
+    joinedDF = joinedDF.join(remainingLeaseFloat)
+    '''
+    df = filterMonth.drop(columns=['_id', 'block', 'street_name', 'storey_range', 'month', 'lease_commence_date'])
+
+    df_dummies = pd.get_dummies(df['town'])
+    df_new = pd.concat([df, df_dummies], axis=1)
+    del df_new['town']
+    # area = pd.DataFrame(df_new['floor_area_sqm'].astype(float))
+    price = pd.DataFrame(df_new['resale_price'].astype(float))
+
+    town = pd.DataFrame(df_new[townList])
+    joinedDF = price
+    # joinedDF = joinedDF.join(area)
+    joinedDF = joinedDF.join(town)
+    corr_matrix = joinedDF.corr().sort_values(by='resale_price',ascending=False)
+    corr_series = corr_matrix['resale_price'].iloc[1:]
+    print(corr_series.sort_values(ascending=False))
+    fig = px.imshow(corr_matrix, text_auto=True,height=1000, aspect="auto")
+
+    # convert the plot to HTML
+    html_fig = fig.to_html(full_html=False)
+    # modify the CSS style to make it look like an image
+    # html_fig = html_fig.replace("<div class=\"mpld3-figure\">", "<div class=\"mpld3-figure\" style=\"display:inline-block; border:1px solid black; padding:5px; width:400px; height:300px; margin: 0 auto;\">")
+    return html_fig
 
 
 # If you want to read a json file -> json.loads() — Takes a JSON string, and converts (loads) it to a Python object.
@@ -229,6 +242,7 @@ def main(inputLocationsList, inputRoomsList):
     response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3")
     data = response.json()
     recordLimit = data['result']['total']
+    print(recordLimit)
     response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3&limit=" + str(recordLimit))
     if response.status_code != 200:
         print("Api cant be found")
@@ -258,7 +272,7 @@ def main(inputLocationsList, inputRoomsList):
     plotImages.append(generateBar(filterMonth, 1, townList))  # find the avg resale price based on filter on that month
     plotImages.append(generateBar(filterMonth, 2, townList))  # find the max resale price based on filter on that month
     plotImages.append(generateCount(filterMonth, townList))  # find the num of resale flats based on filter on that month
-    plotImages.append(generateHeatMap(filterMonth))
+    plotImages.append(generateHeatMap(Data,townList))
 
     for inputTown in inputLocationsList:  # user input
         filterTown = flatInfoPerTown[inputTown.upper()]
@@ -267,6 +281,7 @@ def main(inputLocationsList, inputRoomsList):
             # Specific data filter: town: BEDOK, room = 5 ROOM   -> if room not stated, assumed to be all
             plotImages.append(generateGraph(filterRoom, inputTown, inputRoom, monthList))  # find the Overall Resale Price based on filter and the past 12 months
     return plotImages
+
 
 if __name__ == "__main__":
     main()
