@@ -1,3 +1,4 @@
+import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -19,8 +20,8 @@ def main(user_email, newPassword):
     password = "iloveNTU2!"
 
     # Sender's name and email address
-    sender_name = 'OnlyFlats'
-    sender_email = 'OnlyFlats@hotmail.com'
+    sender_name = os.getenv('sender_name')
+    sender_email = os.getenv('sender_email')
 
     # Recipient's email address
     recipient_email = user_email

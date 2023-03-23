@@ -83,10 +83,10 @@ class Listing(db.Model):
     Attributes:
         link (str): The URL identifier of the listing.
         listImg (str): The URL image of the property.
-        area (int): The area of the property in square feet.
-        room (int): The number of bedrooms in the property.
-        bath (int): The number of bathrooms in the property.
-        cost (int): The cost of the property in SG dollars.
+        area (str): The area of the property in square feet.
+        room (str): The number of bedrooms in the property.
+        bath (str): The number of bathrooms in the property.
+        cost (str): The cost of the property in SG dollars.
         address (str): The street address of the property.
         companyImg (str): The URL of the image for the company that is selling the property.
     """
@@ -108,10 +108,10 @@ class Listing(db.Model):
         Args:
             link (str): The URL of the listing.
             listImg (str): The URL image of the property.
-            area (int): The area of the property in square feet.
-            room (int): The number of bedrooms in the property.
-            bath (int): The number of bathrooms in the property.
-            cost (int): The cost of the property in SG dollars.
+            area (str): The area of the property in square feet.
+            room (str): The number of bedrooms in the property.
+            bath (str): The number of bathrooms in the property.
+            cost (str): The cost of the property in SG dollars.
             address (str): The street address of the property.
             companyImg (str): The URL of the image for the company that is selling the property.
         """
@@ -133,6 +133,7 @@ def home():
     Returns:
         str: The rendered HTML template: home.html
     """
+    session["prevUrl"] = "home"
     return render_template("home.html", session=session)
 
 
@@ -201,12 +202,12 @@ def analysis():
         str: The rendered HTML template: analysis.html
     """
     if request.method == "GET":
-
+        global plotImages
         if "location" in request.args:
             # path = "./HouseApp/static/" # if visual studio
-            path = ".\static"  # if pycharm
-            png_files = [f for f in os.listdir(path) if f.endswith(".png")]
-            png_files = sorted(png_files, key=lambda fname: int(fname.split(".")[0]))
+            # path = ".\static"  # if pycharm
+            # png_files = [f for f in os.listdir(path) if f.endswith(".png")]
+            # png_files = sorted(png_files, key=lambda fname: int(fname.split(".")[0]))
             # display selected option based on input
             location = {"AngMoKio": 0, "Bedok": 0, "Bishan": 0, "BukitBatok": 0, "BukitMerah": 0,
                         "BukitPanjang": 0, "Bukit Timah": 0, "CentralArea": 0, "ChoaChuKang": 0, "Clementi": 0,
@@ -234,7 +235,8 @@ def analysis():
             selectedMaxPrice = session["maxPrice"]
             selectedMinArea = session["minArea"]
             selectedMaxArea = session["maxArea"]
-            return render_template("analysis.html", png_files=png_files, session=session, location=location, flatType=flatType, bed=bed, bath=bath, selectedMinPrice=selectedMinPrice, selectedMaxPrice=selectedMaxPrice, selectedMinArea=selectedMinArea, selectedMaxArea=selectedMaxArea)
+
+            return render_template("analysis.html", plotImages=plotImages, session=session, location=location, flatType=flatType, bed=bed, bath=bath, selectedMinPrice=selectedMinPrice, selectedMaxPrice=selectedMaxPrice, selectedMinArea=selectedMinArea, selectedMaxArea=selectedMaxArea)
     return redirect(url_for("home"))
 
 
@@ -328,6 +330,8 @@ def reset():
     return render_template("resetPassword.html", session=session)
 
 
+
+
 @app.route("/accountController", methods=["GET"])
 def accountController():
     """
@@ -343,31 +347,24 @@ def accountController():
     if request.method == "GET":
         resetStatus()
         if request.args["request"] == "home":
-            session["prevUrl"] = "home"
-            return redirect(url_for("home"))
+            return redirectHome()
         elif request.args["request"] == "accountDetail":
-            session["prevUrl"] = "accountDetail"
-            return redirect(url_for("accountDetail"))
+            return redirectAccountDetail()
         elif request.args["request"] == "wishlist":
-            session["prevUrl"] = "wishlist"
-            return generateWishList()
+            return redirectWishlist()
         elif request.args["request"] == "deleteAccount":
-            session["prevUrl"] = "deleteAccount"
-            return redirect(url_for("deleteAccount"))
+            return redirectDeleteAccount()
         elif request.args["request"] == "deleteAccFromSys":
             return deleteAccFromSys()
         elif request.args["request"] == "register":
-            session["prevUrl"] = "register"
-            return redirect(url_for("register"))
+            return redirectRegister()
         elif request.args["request"] == "registerUser":
             return registerUser()
         elif request.args["request"] == "login":
             return login()
         elif request.args["request"] == "logout":
-            session.pop("email", None)
-            return redirect(url_for("home"))
+            return logout()
         elif request.args["request"] == "changePassword":
-            session["prevUrl"] = "accountDetail"
             return changePassword()
         # AddToWishList is added in value to identify request
         elif "AddToWishList" in request.args["request"]:  # /controller?request=AddToWishList*link
@@ -398,23 +395,30 @@ def redirectController():
         resetStatus()
         checkSetUp()
         if request.args["request"] == "home":
-            session["prevUrl"] = "home"
-            return redirect(url_for("home"))
+            return redirectHome()
         elif request.args["request"] == "register":
-            return redirect(url_for("register"))
-        elif request.args["request"] == "login":
-            return redirect(url_for("accountController", request="login", email=request.args["email"], password=request.args["password"]))
+            return redirectRegister()
         elif request.args["request"] == "listings":
             return generateListings()
         elif request.args["request"] == "analysis":
             return generateAnalysis()
         elif request.args["request"] == "sortAscend":
-            listings = dict(sorted(result.items(), key=lambda x: int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison            session["prevUrl"] = "listings"
-            return redirect(url_for("listings", listings=listings))
+            return sortAscend()
         elif request.args["request"] == "sortDescend":
-            listings = dict(sorted(result.items(), key=lambda x: -int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison
-            session["prevUrl"] = "listings"
-            return redirect(url_for("listings", listings=listings))
+            return sortDescend()
+
+
+def sortAscend():
+    global result
+    listings = dict(sorted(result.items(), key=lambda x: int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison            session["prevUrl"] = "listings"
+    return redirect(url_for("listings", listings=listings))
+
+
+def sortDescend():
+    global result
+    listings = dict(sorted(result.items(), key=lambda x: -int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison
+    session["prevUrl"] = "listings"
+    return redirect(url_for("listings", listings=listings))
 
 
 def registerUser():
@@ -478,6 +482,36 @@ def login():
         return prevUrl()
     # print("not found")
     return redirect(url_for("home"))
+
+
+def logout():
+    session.pop("email", None)
+    return redirect(url_for("home"))
+
+
+def redirectHome():
+    session["prevUrl"] = "home"
+    return redirect(url_for("home"))
+
+
+def redirectWishlist():
+    session["prevUrl"] = "wishlist"
+    return generateWishList()
+
+
+def redirectAccountDetail():
+    session["prevUrl"] = "accountDetail"
+    return redirect(url_for("accountDetail"))
+
+
+def redirectDeleteAccount():
+    session["prevUrl"] = "deleteAccount"
+    return redirect(url_for("deleteAccount"))
+
+
+def redirectRegister():
+    session["prevUrl"] = "register"
+    return redirect(url_for("register"))
 
 
 def prevUrl():  # goes back to where user click login
@@ -546,6 +580,7 @@ def changePassword():
     Returns:
         str: The url to redirected user back to accountDetail.html
     """
+    session["prevUrl"] = "accountDetail"
     oldPassword = request.args["oldPassword"]
     newPassword = request.args["newPassword"]
     rePassword = request.args["rePassword"]
@@ -727,7 +762,6 @@ def checkSetUp():
         session["maxPrice"] = " "
         session["minArea"] = " "
         session["maxArea"] = " "
-        session["prevUrl"] = " "
         setup = True
 
 
@@ -804,6 +838,7 @@ def generateAnalysis():
     Returns:
         str: The url to redirected user to analysis.html
     """
+    global plotImages
     if len(request.args.getlist("locOption")) != 0:  # user new input options
         location = request.args.getlist("locOption")
         flatType = request.args.getlist("roomOption")
@@ -824,9 +859,9 @@ def generateAnalysis():
             session["minArea"] = minArea
             session["maxArea"] = maxArea
             # generate new analysis
-            plot.main(location, flatType)
+            plotImages = plot.main(location, flatType)
     session["prevUrl"] = "analysis"
-    return redirect(url_for("analysis", location=location))  # location as request.args as a dummy to prevent illegal access
+    return redirect(url_for("analysis", location=location))
 
 
 if __name__ == "__main__":
@@ -834,7 +869,8 @@ if __name__ == "__main__":
 
     print("url: http://localhost:8080/")
     setup = False  # indication of initial setup is done
-    result = {}  # contain current extracted result
+    result = {}  # contain current extracted list result
+    plotImages = {}  # contain current plot result
     with app.app_context():
         db.create_all()  # create database if it doesn't exist
     serve(app, host="0.0.0.0", port=8080)  # http://localhost:8080/
