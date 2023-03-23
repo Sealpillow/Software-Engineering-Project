@@ -205,10 +205,6 @@ def analysis():
     if request.method == "GET":
         global plotImages
         if "location" in request.args:
-            # path = "./HouseApp/static/" # if visual studio
-            # path = ".\static"  # if pycharm
-            # png_files = [f for f in os.listdir(path) if f.endswith(".png")]
-            # png_files = sorted(png_files, key=lambda fname: int(fname.split(".")[0]))
             # display selected option based on input
             location = {"AngMoKio": 0, "Bedok": 0, "Bishan": 0, "BukitBatok": 0, "BukitMerah": 0,
                         "BukitPanjang": 0, "Bukit Timah": 0, "CentralArea": 0, "ChoaChuKang": 0, "Clementi": 0,

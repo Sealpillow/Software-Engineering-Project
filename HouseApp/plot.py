@@ -228,11 +228,7 @@ def main(inputLocationsList, inputRoomsList):
         inputLocationsList (list): contain list of location option
         inputRoomsList (list): contain list of room option
     """
-    # path = "./HouseApp/static/" # if visual studio
-    path = "static/"  # if pycharm
-    for filename in os.listdir(path):
-        if filename.endswith('.png'):
-            os.remove(os.path.join(path, filename))
+
     response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3")
     data = response.json()
     recordLimit = data['result']['total']
