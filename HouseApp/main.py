@@ -6,6 +6,7 @@ import os
 import plot
 import random
 import string
+import datetime
 
 app = Flask(__name__)
 # for sessions
@@ -236,7 +237,13 @@ def analysis():
             selectedMinArea = session["minArea"]
             selectedMaxArea = session["maxArea"]
 
-            return render_template("analysis.html", plotImages=plotImages, session=session, location=location, flatType=flatType, bed=bed, bath=bath, selectedMinPrice=selectedMinPrice, selectedMaxPrice=selectedMaxPrice, selectedMinArea=selectedMinArea, selectedMaxArea=selectedMaxArea)
+            now = datetime.datetime.now()
+            current_year = str(now.year)
+            prev_month = now.month - 1 if now.month - 1 > 0 else 12  # if month is jan:1 prev month will be dec:12
+            strMonth = ('0' + str(prev_month)) if prev_month < 10 else str(prev_month)
+            date = current_year + "-" + strMonth
+
+            return render_template("analysis.html", date=date, plotImages=plotImages, session=session, location=location, flatType=flatType, bed=bed, bath=bath, selectedMinPrice=selectedMinPrice, selectedMaxPrice=selectedMaxPrice, selectedMinArea=selectedMinArea, selectedMaxArea=selectedMaxArea)
     return redirect(url_for("home"))
 
 

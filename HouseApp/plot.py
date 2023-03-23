@@ -23,7 +23,7 @@ def generateAnnotation(xAxis, yAxis):
         yAxis (list): List of string/int containing y-axis values
     """
     for i in range(len(xAxis)):
-        plt.annotate(str(yAxis[i]), xy=(xAxis[i], yAxis[i]), fontsize=15)
+        plt.annotate(str(yAxis[i]), xy=(xAxis[i], yAxis[i]))
 
 
 def generateGraph(filteredFrame, town, room, monthList):  # option 0: generate average resale price, option 1:Overall generate average resale price
@@ -74,28 +74,35 @@ def generateGraph(filteredFrame, town, room, monthList):  # option 0: generate a
     fig = go.Figure()
 
     # Add the first line to the figure
-    fig.add_trace(go.Scatter(x=xMonth, y=selectedTownAverageResalePricePerMonth, mode='lines+text', name='Line 1', text=selectedTownAverageResalePricePerMonth))
+    fig.add_trace(go.Scatter(x=xMonth, y=maxResalePricePerMonth, mode='lines+text', name='Max', text=maxResalePricePerMonth))
 
     # Add the second line to the figure
-    fig.add_trace(go.Scatter(x=xMonth, y=minResalePricePerMonth, mode='lines+text', name='Line 1', text=minResalePricePerMonth))
+    fig.add_trace(go.Scatter(x=xMonth, y=selectedTownAverageResalePricePerMonth, mode='lines+text', name='Average', text=selectedTownAverageResalePricePerMonth))
 
     # Add the third line to the figure
-    fig.add_trace(go.Scatter(x=xMonth, y=maxResalePricePerMonth, mode='lines+text', name='Line 1', text=maxResalePricePerMonth))
+    fig.add_trace(go.Scatter(x=xMonth, y=minResalePricePerMonth, mode='lines+text', name='Min', text=minResalePricePerMonth))
 
     # plt.title(town + "(" + room + ")")
-
+    fig.update_layout(
+        autosize=True,
+        height=500,
+        yaxis=dict(
+            title_text="Resale Price",
+        ),
+        xaxis=dict(
+            title_text="Month",
+        )
+    )
     # convert the plot to HTML
     html_fig = fig.to_html(full_html=False)
 
     # modify the CSS style to make it look like an image
-    # html_fig = html_fig.replace("<div class=\"mpld3-figure\">", "<div class=\"mpld3-figure\" style=\"display:inline-block; border:1px solid black; padding:5px; width:400px; height:300px; margin: 0 auto;\">")
     return html_fig
 
 
 def generateBar(filterMonth, option, townList):  # min:0, avg:1, max:2
     """
     This function generate Min/Average/Max ResalePricePerMonth graph based on filtered data frame
-
     Args:
         filterMonth (pandas.core.frame.DataFrame): filtered dataframe based on month
         option (int): option that determine what kind of bar graph, 0:min 1:avg 2:max
@@ -105,10 +112,11 @@ def generateBar(filterMonth, option, townList):  # min:0, avg:1, max:2
     flatInfoForEachTown = []
     for i in townList:  # xAxis
         flatInfoForEachTown.append(filterMonth[filterMonth["town"] == i])
-
+    title = ""
     averageResalePricePerTown = []
     for i in range(len(flatInfoForEachTown)):  # yAxis
         if option == 0:
+            title = "Min Resale Price"
             if len(flatInfoForEachTown[i]['resale_price']):
                 priceList = []
                 for j in flatInfoForEachTown[i]['resale_price']:
@@ -117,6 +125,7 @@ def generateBar(filterMonth, option, townList):  # min:0, avg:1, max:2
             else:
                 averageResalePricePerTown.append(0)
         elif option == 1:
+            title = "Average Resale Price"
             counter = 0
             sum = 0
             for j in flatInfoForEachTown[i]['resale_price']:
@@ -128,6 +137,7 @@ def generateBar(filterMonth, option, townList):  # min:0, avg:1, max:2
                 average = sum / counter
             averageResalePricePerTown.append(round(average))
         elif option == 2:
+            title = "Max Resale Price"
             if len(flatInfoForEachTown[i]['resale_price']):
                 priceList = []
                 for j in flatInfoForEachTown[i]['resale_price']:
@@ -138,11 +148,18 @@ def generateBar(filterMonth, option, townList):  # min:0, avg:1, max:2
 
     fig = make_subplots(rows=1, cols=1)
     fig.add_trace(go.Bar(x=townList, y=averageResalePricePerTown, name="bar", text=averageResalePricePerTown,textangle=0))
-
+    fig.update_layout(
+        autosize=True,
+        height=500,
+        yaxis=dict(
+            title_text=title,
+        ),
+        xaxis = dict(
+            title_text="Town",
+        )
+    )
+    # convert the plot to HTML
     html_fig = fig.to_html(full_html=False)
-
-    # modify the CSS style to make it look like an image
-    # html_fig = html_fig.replace("<div class=\"mpld3-figure\">", "<div class=\"mpld3-figure\" style=\"display:inline-block; border:1px solid black; padding:5px; width:400px; height:300px; margin: 0 auto;\">")
     return html_fig
 
 
@@ -169,8 +186,6 @@ def generateCount(filterMonth, townList):
     )
     # convert the plot to HTML
     html_fig = fig.to_html(full_html=False)
-    # modify the CSS style to make it look like an image
-    # html_fig = html_fig.replace("<div class=\"mpld3-figure\">", "<div class=\"mpld3-figure\" style=\"display:inline-block; border:1px solid black; padding:5px; width:400px; height:300px; margin: 0 auto;\">")
     return html_fig
 
 
@@ -189,13 +204,11 @@ def generateHeatMap(filterMonth,townList,option):
         joinedDF = joinedDF.join(town)
     corr_matrix = joinedDF.corr().sort_values(by='resale_price',ascending=False)
     corr_series = corr_matrix['resale_price'].iloc[1:]
-    print(corr_series.sort_values(ascending=False))
+    # print(corr_series.sort_values(ascending=False))
     fig = px.imshow(corr_matrix, text_auto=True,height=1000, aspect="auto")
 
     # convert the plot to HTML
     html_fig = fig.to_html(full_html=False)
-    # modify the CSS style to make it look like an image
-    # html_fig = html_fig.replace("<div class=\"mpld3-figure\">", "<div class=\"mpld3-figure\" style=\"display:inline-block; border:1px solid black; padding:5px; width:400px; height:300px; margin: 0 auto;\">")
     return html_fig
 
 
@@ -215,15 +228,14 @@ def main(inputLocationsList, inputRoomsList):
         inputLocationsList (list): contain list of location option
         inputRoomsList (list): contain list of room option
     """
-    path = "./HouseApp/static/" # if visual studio
-    # path = "static/"  # if pycharm
+    # path = "./HouseApp/static/" # if visual studio
+    path = "static/"  # if pycharm
     for filename in os.listdir(path):
         if filename.endswith('.png'):
             os.remove(os.path.join(path, filename))
     response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3")
     data = response.json()
     recordLimit = data['result']['total']
-    print(recordLimit)
     response = requests.get("https://data.gov.sg/api/action/datastore_search?resource_id=f1765b54-a209-4718-8d38-a39237f502b3&limit=" + str(recordLimit))
     if response.status_code != 200:
         print("Api cant be found")
