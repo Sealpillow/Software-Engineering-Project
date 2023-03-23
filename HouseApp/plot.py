@@ -168,44 +168,19 @@ def generateCount(filterMonth, townList):
     return html_fig
 
 
-def generateHeatMap(filterMonth,townList):
-
-
-    '''
-    remainingLease = pd.DataFrame(filterMonth['remaining_lease'])
-    remainingLease = filterMonth["remaining_lease"]
-    remainingLeaseFloat = []
-    for lease in remainingLease:
-        leaseYear = float(lease[0:2])
-        if lease[9:11] == '':
-            leaseMonth = 0
-        else:
-            leaseMonth = float(lease[9:11])
-
-        if (leaseMonth == 0):
-            leaseFloat = leaseYear
-        else:
-            leaseFloat = leaseYear + leaseMonth/12
-        remainingLeaseFloat.append(float(round(leaseFloat, 2)))
-    remainingLeaseFloat = pd.DataFrame(remainingLeaseFloat)
-    remainingLeaseFloat.rename({0:"remaining lease (years)"}, axis=1, inplace=True)
-    remainingLeaseFloat = pd.DataFrame(remainingLeaseFloat["remaining lease (years)"].astype(float))
-    joinedDF = price
-    joinedDF = joinedDF.join(area)
-    joinedDF = joinedDF.join(remainingLeaseFloat)
-    '''
+def generateHeatMap(filterMonth,townList,option):
     df = filterMonth.drop(columns=['_id', 'block', 'street_name', 'storey_range', 'month', 'lease_commence_date'])
-
-    df_dummies = pd.get_dummies(df['town'])
-    df_new = pd.concat([df, df_dummies], axis=1)
-    del df_new['town']
-    # area = pd.DataFrame(df_new['floor_area_sqm'].astype(float))
-    price = pd.DataFrame(df_new['resale_price'].astype(float))
-
-    town = pd.DataFrame(df_new[townList])
+    price = pd.DataFrame(df['resale_price'].astype(float))
     joinedDF = price
-    # joinedDF = joinedDF.join(area)
-    joinedDF = joinedDF.join(town)
+    if option == 0:
+        area = pd.DataFrame(df['floor_area_sqm'].astype(float))
+        joinedDF = joinedDF.join(area)
+    elif option == 1:
+        df_dummies = pd.get_dummies(df['town'])
+        df_new = pd.concat([df, df_dummies], axis=1)
+        del df_new['town']
+        town = pd.DataFrame(df_new[townList])
+        joinedDF = joinedDF.join(town)
     corr_matrix = joinedDF.corr().sort_values(by='resale_price',ascending=False)
     corr_series = corr_matrix['resale_price'].iloc[1:]
     print(corr_series.sort_values(ascending=False))
@@ -272,7 +247,8 @@ def main(inputLocationsList, inputRoomsList):
     plotImages.append(generateBar(filterMonth, 1, townList))  # find the avg resale price based on filter on that month
     plotImages.append(generateBar(filterMonth, 2, townList))  # find the max resale price based on filter on that month
     plotImages.append(generateCount(filterMonth, townList))  # find the num of resale flats based on filter on that month
-    plotImages.append(generateHeatMap(Data,townList))
+    plotImages.append(generateHeatMap(filterMonth,townList,0))
+    plotImages.append(generateHeatMap(filterMonth, townList, 1))
 
     for inputTown in inputLocationsList:  # user input
         filterTown = flatInfoPerTown[inputTown.upper()]
