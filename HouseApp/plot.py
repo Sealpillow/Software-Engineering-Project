@@ -110,7 +110,10 @@ def generateBar(filterMonth, option, townList):  # min:0, avg:1, max:2
     for i in range(len(flatInfoForEachTown)):  # yAxis
         if option == 0:
             if len(flatInfoForEachTown[i]['resale_price']):
-                averageResalePricePerTown.append(float(min(flatInfoForEachTown[i]['resale_price'])))
+                priceList = []
+                for j in flatInfoForEachTown[i]['resale_price']:
+                    priceList.append(float(j))
+                averageResalePricePerTown.append(min(priceList))
             else:
                 averageResalePricePerTown.append(0)
         elif option == 1:
@@ -126,7 +129,10 @@ def generateBar(filterMonth, option, townList):  # min:0, avg:1, max:2
             averageResalePricePerTown.append(round(average))
         elif option == 2:
             if len(flatInfoForEachTown[i]['resale_price']):
-                averageResalePricePerTown.append(float(max(flatInfoForEachTown[i]['resale_price'])))
+                priceList = []
+                for j in flatInfoForEachTown[i]['resale_price']:
+                    priceList.append(float(j))
+                averageResalePricePerTown.append(max(priceList))
             else:
                 averageResalePricePerTown.append(0)
 
@@ -209,8 +215,8 @@ def main(inputLocationsList, inputRoomsList):
         inputLocationsList (list): contain list of location option
         inputRoomsList (list): contain list of room option
     """
-    # path = "./HouseApp/static/" # if visual studio
-    path = "static/"  # if pycharm
+    path = "./HouseApp/static/" # if visual studio
+    # path = "static/"  # if pycharm
     for filename in os.listdir(path):
         if filename.endswith('.png'):
             os.remove(os.path.join(path, filename))
