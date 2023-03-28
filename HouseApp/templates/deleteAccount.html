@@ -73,12 +73,14 @@ h2{padding:0;margin:0}
 
 /* Set a style for the submit/login button */
 .form-container .btn {
+  /* display: inline-block; */
+  position: relative;
   background-color: #04AA6D;
   color: white;
   padding: 16px 20px;
   border: none;
   cursor: pointer;
-  width: 100%;
+  width: 45%;
   margin-bottom:10px;
   opacity: 0.8;
 }
@@ -86,6 +88,7 @@ h2{padding:0;margin:0}
 /* Add a red background color to the cancel button */
 .form-container .cancel {
   background-color: red;
+  float:right;
 }
 
 /* Add some hover effects to buttons */
@@ -150,7 +153,7 @@ h4 {
 <div class="form-popup" id="myForm">
   <form action="/accountController" method = "get" class="form-container">
     <h1>Delete Account</h1>
-    <label ><b>Password</b></label>
+    <!-- <label ><b>Password</b></label> -->
     <input type="password" placeholder="Password" name="password" required>
     <button type="submit" class="btn" name="request" value="deleteAccFromSys">Delete</button>
     <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
