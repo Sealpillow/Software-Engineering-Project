@@ -772,6 +772,7 @@ def deleteFromWishList():
         found_user.wishlist.remove(found_listing)
         db.session.commit()
         listings = {}
+        # update display of wishlist
         for index, x in enumerate(found_user.wishlist):  # this current user wishlist
             listings[str(index)] = [x.link, x.listImg, x.area, x.room, x.bath, x.cost, x.address, x.companyImg]
         return redirect(url_for("wishlist", listings=listings))
