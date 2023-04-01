@@ -139,8 +139,6 @@ def home():
 
 
 # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-
-
 @app.route("/listings")  # request.form -> dictionary
 def listings():
     """
@@ -154,7 +152,7 @@ def listings():
         if 'listings' in request.args:
             dict = request.args.to_dict("listings")
             res = dict["listings"].replace("\'", "\"")  # replace char in string that contain ' to " so that json.load can covert it to json
-            res = res.replace("\"s", "'s")  # incase there are strings that contain 's that was replaced to "s
+            res = res.replace('\\', '')  # to remove \
             dictList = json.loads(res)
             listings = [dictList[list] for list in dictList.keys()]
 
@@ -412,12 +410,24 @@ def redirectController():
 
 
 def sortAscend():
+    """
+    This function is to sort the global result list that store the extracted listing in ascending order
+
+    Returns:
+      str: The rendered HTML template: listings.html
+    """
     global result
     listings = dict(sorted(result.items(), key=lambda x: int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison            session["prevUrl"] = "listings"
     return redirect(url_for("listings", listings=listings))
 
 
 def sortDescend():
+    """
+        This function is to sort the global result list that store the extracted listing in descending order
+
+        Returns:
+          str: The rendered HTML template: listings.html
+        """
     global result
     listings = dict(sorted(result.items(), key=lambda x: -int(x[1][5].replace(",", "").replace("$", ""))))  # remove all the '$' and ',' and convert to int for comparison
     session["prevUrl"] = "listings"
@@ -488,31 +498,67 @@ def login():
 
 
 def logout():
+    """
+    This function log user from website session and redirect user to home
+
+    Returns:
+      str: The url to redirected user back to home.html
+    """
     session.pop("email", None)
     return redirect(url_for("home"))
 
 
 def redirectHome():
+    """
+    This function redirect user to home page and set session["prevUrl"] to home
+
+    Returns:
+      str: The url to redirected user back to home.html
+    """
     session["prevUrl"] = "home"
     return redirect(url_for("home"))
 
 
 def redirectWishlist():
+    """
+    This function redirect user to wishlist page and set session["prevUrl"] to wishlist
+
+    Returns:
+      str: The url to redirected user back to wishlist.html
+    """
     session["prevUrl"] = "wishlist"
     return generateWishList()
 
 
 def redirectAccountDetail():
+    """
+    This function redirect user to wishlist page and set session["prevUrl"] to accountDetail
+
+    Returns:
+     str: The url to redirected user back to accountDetail.html
+    """
     session["prevUrl"] = "accountDetail"
     return redirect(url_for("accountDetail"))
 
 
 def redirectDeleteAccount():
+    """
+    This function redirect user to deleteAccount page and set session["prevUrl"] to deleteAccount
+
+    Returns:
+     str: The url to redirected user back to deleteAccount.html
+    """
     session["prevUrl"] = "deleteAccount"
     return redirect(url_for("deleteAccount"))
 
 
 def redirectRegister():
+    """
+    This function redirect user to register page and set session["prevUrl"] to register
+
+    Returns:
+     str: The url to redirected user back to register.html
+    """
     session["prevUrl"] = "register"
     return redirect(url_for("register"))
 

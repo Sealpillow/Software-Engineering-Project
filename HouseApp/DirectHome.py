@@ -40,6 +40,9 @@ def main(location, flatType, bed, bath, minPrice, maxPrice, minArea, maxArea):
             # webbrowser.open("https://www.directhome.com.sg" + link)
             addr = data.find_next("h4", {"class": "product-classic-title"})
             addr = addr.text.split('\n')[2][4:]
+            if addr is not None:
+                addr = addr.replace("\'", " ")
+                addr = addr.replace("\'s", " s") # incase there are strings that contain 's
             # print(addr)
             # print(' '.join(addr.text.split()))
             info = []  # contains info of listing
@@ -57,8 +60,11 @@ def main(location, flatType, bed, bath, minPrice, maxPrice, minArea, maxArea):
             if pindex > 0:
                 price = price[:pindex]
             # print(price)
-            image = data.find_next("img", {"class": "image_listing"})
+            img = data.find_next("img", {"class": "image_listing"})
             # print(image["src"])
-            listing.append(["https://www.directhome.com.sg" + link, image["src"], info[3], info[1], info[2], price, addr, websiteimg])
-
+            if img is None:
+                image = "-"
+            else:
+                image = img["src"]
+            listing.append(["https://www.directhome.com.sg" + link, image, info[3], info[1], info[2], price, addr, websiteimg])
     return listing

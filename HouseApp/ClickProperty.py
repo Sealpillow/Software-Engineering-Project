@@ -31,11 +31,18 @@ def main(location, bed, bath, minPrice, maxPrice, minArea, maxArea):
         # desc = data.find_next("div", {"class": "property-desc"})
         link = data.find_next("a", {"class": "property_mark_a"})
         img = data.find_next("img", {"class": "ospitem-imgborder lazyload lpiclass"})
+        if img is None:
+            image = "-"
+        else:
+            image = img["smp"]
         floorsize = data.find_next("span", {"itemprop": "floorSize"})
         numBed = data.find_next("span", {"itemprop": "numberOfBedrooms"})
         numBath = data.find_next("span", {"itemprop": "numberOfBathroomsTotal"})
         price = data.find_next("span", {"class": "listprice"})
         addr = data.find_next("div", {"style": "margin-bottom: 5px"})
+        if addr is not None:
+            addr = addr.text.replace("\'", " ")
+            addr = addr.replace("\'s", " s")  # incase there are strings that contain 's
         # print(link["href"])  # https://clickproperty.sg + link["href"]
         # print(img["smp"])
         # print(floorsize.text)
@@ -44,5 +51,5 @@ def main(location, bed, bath, minPrice, maxPrice, minArea, maxArea):
         # print(price)
         # webbrowser.open("https://clickproperty.sg" + link["href"])
 
-        listing.append(["https://clickproperty.sg" + link["href"], img["smp"], floorsize.text, numBed.text, numBath.text, price.text, addr.text, websiteimg])
+        listing.append(["https://clickproperty.sg" + link["href"], image, floorsize.text, numBed.text, numBath.text, price.text, addr, websiteimg])
     return listing
