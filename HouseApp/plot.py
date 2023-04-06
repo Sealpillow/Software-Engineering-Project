@@ -1,32 +1,13 @@
 import requests
-import json
 import pandas as pd
-import seaborn as sb
-import matplotlib.pyplot as plt
-import os
-import matplotlib
 import datetime
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 import plotly.express as px
 
-matplotlib.use('agg')  # used for UserWarning: Starting a Matplotlib GUI outside the main thread will likely fail.
 #  https://www.dataquest.io/blog/python-api-tutorial/
 
-
-def generateAnnotation(xAxis, yAxis):
-    """
-    This function annotate str values to its plot
-
-    Args:
-        xAxis (list): List of string containing x-axis values
-        yAxis (list): List of string/int containing y-axis values
-    """
-    for i in range(len(xAxis)):
-        plt.annotate(str(yAxis[i]), xy=(xAxis[i], yAxis[i]))
-
-
-def generateGraph(filteredFrame, town, room, monthList):  # option 0: generate average resale price, option 1:Overall generate average resale price
+def generateGraph(filteredFrame, monthList):  # option 0: generate average resale price, option 1:Overall generate average resale price
     """
     This function generate Min/Average/Max ResalePricePerMonth graph based on filtered data frame
 
@@ -269,7 +250,7 @@ def main(inputLocationsList, inputRoomsList):
         for inputRoom in inputRoomsList:  # user input
             filterRoom = filterTown[filterTown["flat_type"] == inputRoom.upper()]
             # Specific data filter: town: BEDOK, room = 5 ROOM   -> if room not stated, assumed to be all
-            plotImages.append(generateGraph(filterRoom, inputTown, inputRoom, monthList))  # find the Overall Resale Price based on filter and the past 12 months
+            plotImages.append(generateGraph(filterRoom, monthList))  # find the Overall Resale Price based on filter and the past 12 months
     return plotImages
 
 

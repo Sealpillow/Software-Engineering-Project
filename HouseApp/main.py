@@ -2,8 +2,6 @@ from flask import Flask, redirect, url_for, render_template, request, session, f
 import ClickProperty, DirectHome, sendEmail
 from flask_sqlalchemy import SQLAlchemy
 import json
-import os
-import plot
 import random
 import string
 import datetime
